@@ -5308,13 +5308,17 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.$refs.modal.setMessage("Файл успешно загружен");
 
+        _this.clearAttachment();
+
         _this.$refs.modal.showWindow();
+
+        console.log(response.data['fileName']);
       })["catch"](function (error) {
         _this.$refs.modal.setTitle("Ошибка!");
 
-        console.log(error.response.data.errors.attachment[0]);
+        _this.clearAttachment();
 
-        _this.$refs.modal.setMessage(error.response.data.errors.attachment[0]);
+        if (error.response.status === 422) _this.$refs.modal.setMessage(error.response.data.errors.attachment[0]);else _this.$refs.modal.setMessage("Файл удалось загрузить, однако при обработке произошла ошибка. Попробуйте другой");
 
         _this.$refs.modal.showWindow();
       });
@@ -5322,6 +5326,11 @@ __webpack_require__.r(__webpack_exports__);
     onAttachmentChange: function onAttachmentChange(e) {
       this.attachment = e.target.files[0];
       this.name = this.attachment.name;
+    },
+    clearAttachment: function clearAttachment() {
+      this.attachment = null;
+      document.getElementById('customFile').value = null;
+      this.name = "Выберите файл...";
     }
   }
 });

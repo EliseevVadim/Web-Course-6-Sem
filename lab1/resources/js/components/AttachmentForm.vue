@@ -38,18 +38,28 @@ export default {
                 .then(response => {
                     this.$refs.modal.setTitle("Успех!");
                     this.$refs.modal.setMessage("Файл успешно загружен");
+                    this.clearAttachment();
                     this.$refs.modal.showWindow();
+                    console.log(response.data['fileName']);
                 })
                 .catch(error => {
                     this.$refs.modal.setTitle("Ошибка!");
-                    console.log(error.response.data.errors.attachment[0]);
-                    this.$refs.modal.setMessage(error.response.data.errors.attachment[0]);
+                    this.clearAttachment();
+                    if (error.response.status === 422)
+                        this.$refs.modal.setMessage(error.response.data.errors.attachment[0]);
+                    else
+                        this.$refs.modal.setMessage("Файл удалось загрузить, однако при обработке произошла ошибка. Попробуйте другой");
                     this.$refs.modal.showWindow();
                 })
         },
         onAttachmentChange (e) {
             this.attachment = e.target.files[0]
             this.name = this.attachment.name
+        },
+        clearAttachment(){
+            this.attachment = null;
+            document.getElementById('customFile').value = null;
+            this.name = "Выберите файл...";
         }
     }
 }
