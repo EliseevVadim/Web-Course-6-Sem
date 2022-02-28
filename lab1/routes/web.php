@@ -35,3 +35,8 @@ Route::post('/addRecord', [ActivitiesController::class, 'addRecord'])->name('add
 Route::post('/updateRecord', [ActivitiesController::class, 'updateRecord'])->name('update');
 
 Route::delete('/deleteRecord/{id?}', [ActivitiesController::class, 'deleteRecord'])->name('delete');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});

@@ -19,6 +19,11 @@
                         <div class="row d-flex justify-content-center p-5">
                             <a class="btn btn-primary m-2" href="/data-view" role="button">Просмотр информации</a>
                         </div>
+                        @admin
+                            <div class="row d-flex justify-content-center p-5">
+                                <a class="btn btn-success m-2" href="/admin" role="button">Административная панель</a>
+                            </div>
+                        @endadmin
                     </div>
                 </div>
             </div>
