@@ -12,7 +12,7 @@
                     {{ message }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @click.prevent="closeWindow()">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @click.prevent="closeWindow()">Закрыть</button>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
 
 <script>
 export default {
-    name: "UploadingResultWindow",
+    name: "RequestResultWindow",
     data() {
         return {
             visible: false,
@@ -45,7 +45,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

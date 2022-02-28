@@ -5,6 +5,7 @@
  */
 
 require('./bootstrap');
+const DataProcessingWindow = require("./components/DataProcessingWindow");
 
 window.Vue = require('vue').default;
 
@@ -19,9 +20,13 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('attachment-form', require('./components/AttachmentForm.vue').default);
-Vue.component('uploading-result-window', require('./components/UploadingResultWindow.vue').default);
+Vue.component('request-result-window', require('./components/RequestResultWindow.vue').default);
+Vue.component('data-processing-window', require('./components/DataProcessingWindow.vue').default);
+Vue.component('add-record-button', require('./components/AddRecordButton.vue').default);
+Vue.component('edit-record-button', require('./components/EditRecordButton.vue').default);
+Vue.component('delete-record-button', require('./components/DeleteRecordButton.vue').default);
+Vue.component('confirmation-form', require('./components/ConfirmationForm.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

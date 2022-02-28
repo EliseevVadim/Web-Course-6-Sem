@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivitiesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AttachmentsController;
@@ -25,4 +26,12 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/import/{path}', [AttachmentsController::class, 'importFile']);
+Route::get('/data-view', [HomeController::class, 'dataView'])->name('data');
+
+Route::get('/activity/{id?}', [ActivitiesController::class, 'getActivityById'])->name('getActivity');
+
+Route::post('/addRecord', [ActivitiesController::class, 'addRecord'])->name('add');
+
+Route::post('/updateRecord', [ActivitiesController::class, 'updateRecord'])->name('update');
+
+Route::delete('/deleteRecord/{id?}', [ActivitiesController::class, 'deleteRecord'])->name('delete');

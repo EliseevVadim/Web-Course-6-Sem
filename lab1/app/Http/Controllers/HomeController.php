@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAttachmentRequest;
 use App\Imports\ActivitiesImport;
+use App\Models\Activity;
 use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -45,5 +46,14 @@ class HomeController extends Controller
             'message' => 'Файл был успешно загружен',
             'fileName' => $attachment->path
         ]);
+    }
+
+    public function dataView() {
+        $activities = Activity::join('groups', 'activities.GroupId', '=', 'groups.id')
+            ->join('disciplines', 'activities.DisciplineId', '=', 'disciplines.id')
+            ->orderByDesc('Date')
+            ->select(['activities.*', 'groups.GroupName', 'disciplines.DisciplineName'])
+            ->paginate(10);
+        return view('dataView', ['data' => $activities]);
     }
 }

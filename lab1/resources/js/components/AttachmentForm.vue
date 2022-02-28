@@ -13,12 +13,12 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Загрузить</button>
         </div>
-        <uploading-result-window ref="modal"></uploading-result-window>
+        <request-result-window ref="modal"></request-result-window>
     </form>
 </template>
 
 <script>
-import UploadingResultWindow from "./UploadingResultWindow";
+import UploadingResultWindow from "./RequestResultWindow";
 export default {
     components: {UploadingResultWindow},
     data () {
