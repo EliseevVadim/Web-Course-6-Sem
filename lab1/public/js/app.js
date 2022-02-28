@@ -5311,6 +5311,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5319,20 +5324,22 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       name: "Выберите файл...",
-      attachment: null
+      attachment: null,
+      useDrive: false
     };
   },
   methods: {
     submit: function submit() {
       var _this = this;
 
+      var uri = this.useDrive ? "/loadWithDrive" : '/';
       var config = {
         'content-type': 'multipart/form-data'
       };
       var formData = new FormData();
       formData.append('name', this.name);
       formData.append('attachment', this.attachment);
-      axios.post('/', formData, config).then(function (response) {
+      axios.post(uri, formData, config).then(function (response) {
         _this.$refs.modal.setTitle("Успех!");
 
         _this.$refs.modal.setMessage("Файл успешно загружен");
@@ -5360,6 +5367,12 @@ __webpack_require__.r(__webpack_exports__);
       this.attachment = null;
       document.getElementById('customFile').value = null;
       this.name = "Выберите файл...";
+    },
+    submitWithGoogleDrive: function submitWithGoogleDrive() {
+      this.useDrive = true;
+    },
+    submitSimply: function submitSimply() {
+      this.useDrive = false;
     }
   }
 });
@@ -29450,7 +29463,7 @@ var render = function () {
       on: {
         submit: function ($event) {
           $event.preventDefault()
-          return _vm.submit.apply(null, arguments)
+          return _vm.submit()
         },
       },
     },
@@ -29471,27 +29484,46 @@ var render = function () {
         ]),
       ]),
       _vm._v(" "),
-      _vm._m(0),
+      _c("div", { staticClass: "row d-flex justify-content-between" }, [
+        _c("div", { staticClass: "form-group w-50" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { type: "submit" },
+              on: {
+                click: function ($event) {
+                  return _vm.submitSimply()
+                },
+              },
+            },
+            [_vm._v("Загрузить")]
+          ),
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group w-50" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              attrs: { type: "submit" },
+              on: {
+                click: function ($event) {
+                  return _vm.submitWithGoogleDrive()
+                },
+              },
+            },
+            [_vm._v("Загрузить с выгрузкой на Google Drive")]
+          ),
+        ]),
+      ]),
       _vm._v(" "),
       _c("request-result-window", { ref: "modal" }),
     ],
     1
   )
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-        [_vm._v("Загрузить")]
-      ),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

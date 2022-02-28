@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAttachmentRequest;
 use App\Imports\ActivitiesImport;
 use App\Models\Activity;
 use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use \Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -18,7 +18,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except'=>['store']]);
+        $this->middleware('auth', ['except'=>['store', 'storeWithGoogle']]);
     }
 
     /**
@@ -37,11 +37,20 @@ class HomeController extends Controller
             'name' => 'required|string|max:255',
             'attachment' => 'required|max:1024|mimes:csv,xlsx,xlsm'
         ]);
-        $attachment = new Attachment;
-        $attachment->name = $request->name;
-        $attachment->path = $attachment->upload($request->attachment);
-        $attachment->save();
-        $data = Excel::import(new ActivitiesImport, storage_path('/app/public/'.$attachment->path));
+        $attachment = $this->storeAndParse($request);
+        return response()->json([
+            'message' => 'Файл был успешно загружен',
+            'fileName' => $attachment->path
+        ]);
+    }
+
+    public function storeWithGoogleDrive(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'attachment' => 'required|max:1024|mimes:csv,xlsx,xlsm'
+        ]);
+        Storage::disk('google')->putFileAs('', $request->attachment, $request->name);
+        $attachment = $this->storeAndParse($request);
         return response()->json([
             'message' => 'Файл был успешно загружен',
             'fileName' => $attachment->path
@@ -55,5 +64,15 @@ class HomeController extends Controller
             ->select(['activities.*', 'groups.GroupName', 'disciplines.DisciplineName'])
             ->paginate(10);
         return view('dataView', ['data' => $activities]);
+    }
+
+    private function storeAndParse(Request $request): Attachment
+    {
+        $attachment = new Attachment;
+        $attachment->name = $request->name;
+        $attachment->path = $attachment->upload($request->attachment);
+        $attachment->save();
+        $data = Excel::import(new ActivitiesImport, storage_path('/app/public/'.$attachment->path));
+        return $attachment;
     }
 }

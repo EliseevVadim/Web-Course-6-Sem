@@ -3,7 +3,6 @@
 use App\Http\Controllers\ActivitiesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\AttachmentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +20,8 @@ Route::get('/', function () {
 });
 
 Route::post('/', [HomeController::class, 'store'])->name('store');
+
+Route::post('/loadWithDrive', [HomeController::class, 'storeWithGoogleDrive'])->name('storeWithGoogle');
 
 Auth::routes();
 
