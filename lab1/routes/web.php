@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivitiesController;
+use App\Http\Controllers\LoadedFilesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 
@@ -41,3 +42,9 @@ Route::delete('/deleteRecord/{id?}', [ActivitiesController::class, 'deleteRecord
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
+Route::get('/filesView', [LoadedFilesController::class, 'viewFiles'])->name('viewFiles');
+
+Route::delete('/deleteStorageFile/{name?}', [LoadedFilesController::class, 'deleteFileFromStorage'])->name('deleteStorageFile');
+
+Route::delete('/deleteGoogleFile/{name?}', [LoadedFilesController::class, 'deleteFileFromGoogleDrive'])->name('deleteGoogleFile');

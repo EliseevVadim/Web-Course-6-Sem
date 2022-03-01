@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use App\Services\PermissionsChecker;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,7 +29,19 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
         Blade::if('admin', function () {
-            return Auth::user()->role_id === 1;
+            return PermissionsChecker::isAdmin();
+        });
+
+        Blade::if('canDeleteFromStorage', function () {
+            return PermissionsChecker::canDeleteStorageFiles();
+        });
+
+        Blade::if('canDeleteFromGoogleDrive', function () {
+           return PermissionsChecker::canDeleteStorageFiles();
+        });
+
+        Blade::if('canCheckFiles', function () {
+            return PermissionsChecker::canCheckFiles();
         });
     }
 }

@@ -24,6 +24,11 @@
                                 <a class="btn btn-success m-2" href="/admin" role="button">Административная панель</a>
                             </div>
                         @endadmin
+                        @canCheckFiles
+                            <div class="row d-flex justify-content-center p-5">
+                                <a class="btn btn-dark m-2" href="/filesView" role="button">Просмотр и редактирование файлов</a>
+                            </div>
+                        @endcanCheckFiles
                     </div>
                 </div>
             </div>

@@ -27,6 +27,8 @@ Vue.component('add-record-button', require('./components/AddRecordButton.vue').d
 Vue.component('edit-record-button', require('./components/EditRecordButton.vue').default);
 Vue.component('delete-record-button', require('./components/DeleteRecordButton.vue').default);
 Vue.component('confirmation-form', require('./components/ConfirmationForm.vue').default);
+Vue.component('delete-file-button', require('./components/DeleteFileButton.vue').default);
+Vue.component('deletion-confirmation-form', require('./components/DeleteFileConfirmation.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

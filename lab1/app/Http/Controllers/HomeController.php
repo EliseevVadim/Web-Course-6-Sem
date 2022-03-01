@@ -18,7 +18,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except'=>['store', 'storeWithGoogle']]);
+        $this->middleware('auth', ['except'=>['store', 'storeWithGoogleDrive']]);
     }
 
     /**
