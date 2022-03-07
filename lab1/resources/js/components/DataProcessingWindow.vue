@@ -163,7 +163,7 @@ export default {
                     }
                 })
                 .then(response => {
-                  this.model = response.data;
+                  this.model = response.data.data;
                   this.visible = true;
                 })
                 .catch(error => {
@@ -178,28 +178,28 @@ export default {
             this.visible = false;
             this.modelId = 0;
             this.model = {
-                'date' : null,
-                'course' : null,
-                'group' : null,
-                'discipline' : null,
-                'lections' : null,
-                'practics' : null,
-                'labs' : null,
-                'modules' : null,
-                'semesterConsultations' : null,
-                'examConsultations' : null,
-                'passes' : null,
-                'exams' : null,
-                'courseworks' : null,
-                'bachelorsFQW' : null,
-                'specialistsFQW' : null,
-                'mastersFQW' : null,
-                'practicsManagement' : null,
-                'grandExams' : null,
-                'FQWReviewing' : null,
-                'FQWPresenting' : null,
-                'aspirantsManagement' : null,
-                'others' : null
+                'date' : "",
+                'course' : "",
+                'group' : "",
+                'discipline' : "",
+                'lections' : "",
+                'practics' : "",
+                'labs' : "",
+                'modules' : "",
+                'semesterConsultations' : "",
+                'examConsultations' : "",
+                'passes' : "",
+                'exams' : "",
+                'courseworks' : "",
+                'bachelorsFQW' : "",
+                'specialistsFQW' : "",
+                'mastersFQW' : "",
+                'practicsManagement' : "",
+                'grandExams' : "",
+                'FQWReviewing' : "",
+                'FQWPresenting' : "",
+                'aspirantsManagement' : "",
+                'others' : ""
             };
         },
         saveData() {
@@ -209,24 +209,24 @@ export default {
             formData.append('course', this.model.course);
             formData.append('group', this.model.group);
             formData.append('discipline', this.model.discipline);
-            formData.append('lections', this.model.lections);
-            formData.append('practics', this.model.practics);
-            formData.append('labs', this.model.labs);
-            formData.append('modules', this.model.modules);
-            formData.append('semesterConsultations', this.model.semesterConsultations);
-            formData.append('examConsultations', this.model.examConsultations);
-            formData.append('passes', this.model.passes);
-            formData.append('exams', this.model.exams);
-            formData.append('courseworks', this.model.courseworks);
-            formData.append('bachelorsFQW', this.model.bachelorsFQW);
-            formData.append('specialistsFQW', this.model.specialistsFQW);
-            formData.append('mastersFQW', this.model.mastersFQW);
-            formData.append('practicsManagement', this.model.practicsManagement);
-            formData.append('grandExams', this.model.grandExams);
-            formData.append('FQWReviewing', this.model.FQWReviewing);
-            formData.append('FQWPresenting', this.model.FQWPresenting);
-            formData.append('aspirantsManagement', this.model.aspirantsManagement);
-            formData.append('others', this.model.others);
+            formData.append('lections', this.model.lections || "");
+            formData.append('practics', this.model.practics || "");
+            formData.append('labs', this.model.labs || "");
+            formData.append('modules', this.model.modules || "");
+            formData.append('semesterConsultations', this.model.semesterConsultations || "");
+            formData.append('examConsultations', this.model.examConsultations || "");
+            formData.append('passes', this.model.passes || "");
+            formData.append('exams', this.model.exams || "");
+            formData.append('courseworks', this.model.courseworks || "");
+            formData.append('bachelorsFQW', this.model.bachelorsFQW || "");
+            formData.append('specialistsFQW', this.model.specialistsFQW || "");
+            formData.append('mastersFQW', this.model.mastersFQW || "");
+            formData.append('practicsManagement', this.model.practicsManagement || "");
+            formData.append('grandExams', this.model.grandExams || "");
+            formData.append('FQWReviewing', this.model.FQWReviewing || "");
+            formData.append('FQWPresenting', this.model.FQWPresenting || "");
+            formData.append('aspirantsManagement', this.model.aspirantsManagement || "");
+            formData.append('others', this.model.others || "");
             if (this.modelId === 0) {
                 axios.post('/addRecord', formData, config)
                     .then(() => {

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Facades\PermissionsCheckerFacade;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -29,19 +30,19 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
         Blade::if('admin', function () {
-            return PermissionsChecker::isAdmin();
+            return PermissionsCheckerFacade::instance()->isAdmin();
         });
 
         Blade::if('canDeleteFromStorage', function () {
-            return PermissionsChecker::canDeleteStorageFiles();
+            return PermissionsCheckerFacade::instance()->canDeleteStorageFiles();
         });
 
         Blade::if('canDeleteFromGoogleDrive', function () {
-           return PermissionsChecker::canDeleteStorageFiles();
+            return PermissionsCheckerFacade::instance()->canDeleteFromGoogleDrive();
         });
 
         Blade::if('canCheckFiles', function () {
-            return PermissionsChecker::canCheckFiles();
+            return PermissionsCheckerFacade::instance()->canCheckFiles();
         });
     }
 }

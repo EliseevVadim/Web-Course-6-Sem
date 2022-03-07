@@ -9,8 +9,8 @@ class Activity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['Date', 'Course', 'GroupId', 'DisciplineId', 'Lections', 'Practics', 'Labs',
-        'Modules', 'SemesterConsultations', 'ExamConsultations', 'Passes', 'Exams', 'Courseworks',
-        'BachelorsFQW', 'SpecialistsFQW', 'MastersFQW', 'PracticsManagement', 'GrandExams', 'FQWReviewing',
-        'AspirantsManagement', 'FQWPresenting', 'Others'];
+    protected $fillable = ['date', 'course', 'groupId', 'disciplineId', 'lections', 'practics', 'labs',
+        'modules', 'semesterConsultations', 'examConsultations', 'passes', 'exams', 'courseworks',
+        'bachelorsFQW', 'specialistsFQW', 'mastersFQW', 'practicsManagement', 'grandExams', 'FQWReviewing',
+        'aspirantsManagement', 'FQWPresenting', 'others'];
 }
