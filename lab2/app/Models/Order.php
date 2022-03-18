@@ -16,4 +16,10 @@ class Order extends Model
         'sum',
         'state_id'
     ];
+
+    public function calculateSum($serviceInfo, $quantity)
+    {
+        return !is_null($serviceInfo->discount) ? ($serviceInfo->price - $serviceInfo->price * $serviceInfo->discount / 100) * $quantity
+            : $serviceInfo->price * $quantity;
+    }
 }

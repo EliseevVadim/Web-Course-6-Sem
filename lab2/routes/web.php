@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ModerationController;
 use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,7 @@ Route::get('/', function () {
 });
 
 Route::any('/telegram/handler', [TelegramController::class, "handler"]);
+
+Route::get('/openServiceAdding', [ModerationController::class, "openServiceAdding"])->name("openServiceAdding");
+
+Route::post('/addService', [ModerationController::class, "addService"]);

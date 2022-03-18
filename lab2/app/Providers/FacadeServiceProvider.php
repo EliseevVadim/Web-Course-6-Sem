@@ -14,7 +14,9 @@ class FacadeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('shop.service', fn() => new TelegramBotHandler());
+        $this->app->bind('shop.service', function () {
+            return new TelegramBotHandler();
+        });
     }
 
     /**

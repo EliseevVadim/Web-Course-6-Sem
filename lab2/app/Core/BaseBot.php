@@ -22,18 +22,46 @@ abstract class BaseBot extends BotCore
         return $this;
     }
 
+    public function sendService($service, $path, $keyboard)
+    {
+        try {
+            if (!is_null($service->discount))
+                $discount = $service->discount."%";
+            else
+                $discount = "отсутствует";
+            $caption = "<b>Название:</b> $service->name
+<b>Описание:</b> $service->description
+<b>Скидка:</b> $discount
+<b>Изначальная цена:</b> $service->price
+<b>Число заказов:</b> $service->orders_number";
+            $this->bot->sendPhoto([
+                "chat_id" => $this->chatId,
+                "photo" => $path,
+                "caption" => $caption,
+                "parse_mode" => "HTML",
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => $keyboard
+                ])
+            ]);
+        }
+        catch (\Exception $exception) {
+            $this->sendMessage($this->chatId, $exception->getMessage());
+        }
+        return $this;
+    }
+
     public function sendPhoto($chatId, $caption, $path): BaseBot
     {
         try {
             $this->bot->sendPhoto([
-                "chat_id" => $chatId,
+                "chat_id" => $this->chatId,
                 "photo" => $path,
                 "caption" => $caption,
                 "parse_mode" => "HTML"
             ]);
         }
         catch (\Exception $exception) {
-
+            $this->sendMessage($this->chatId, $exception->getMessage());
         }
         return $this;
     }
@@ -90,7 +118,7 @@ abstract class BaseBot extends BotCore
             ]);
         }
         catch (\Exception $exception) {
-
+            $this->sendMessage($this->chatId, $exception->getMessage());
         }
         return $this;
     }
@@ -108,9 +136,43 @@ abstract class BaseBot extends BotCore
             ]);
         }
         catch (\Exception $exception) {
-
+            $this->bot->sendMessage([
+                "chat_id" => $chatId,
+                "text" => $exception->getMessage(),
+                "parse_mode" => "HTML",
+            ]);
         }
         return $this;
     }
 
+    public function reply($message)
+    {
+        return $this->sendMessage($this->chatId, $message);
+    }
+
+    public function replyKeyboard($message, $keyboard = [])
+    {
+        return $this->sendReplyKeyboard($this->chatId, $message, $keyboard);
+    }
+
+    public function replyEditInlineKeyboard($messageId, $keyboard)
+    {
+        return $this->editInlineKeyboard($this->chatId, $messageId, $keyboard);
+    }
+
+    public function inlineKeyboard($message, $keyboard = [])
+    {
+        return $this->sendInlineKeyboard($this->chatId, $message, $keyboard);
+    }
+
+    public function replyPhoto($caption, $path)
+    {
+        try {
+            return $this->sendPhoto($this->chatId, $caption, $path);
+        }
+        catch (\Exception $exception) {
+            $this->sendMessage($this->chatId, $exception->getMessage());
+            return 0;
+        }
+    }
 }
