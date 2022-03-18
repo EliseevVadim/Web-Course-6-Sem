@@ -39,7 +39,7 @@ ShopServiceFacade::bot()->addRoute("/Только для модераторов"
     ]);
 });
 
-ShopServiceFacade::bot()->addRoute("/type [()0-9]+", [ServiceTypesController::class, "getServicesList"]);
+ShopServiceFacade::bot()->addRoute("/type [()0-9]+ [()0-9]+", [ServiceTypesController::class, "getServicesList"]);
 
 ShopServiceFacade::bot()->addRoute("/addToCart [()0-9]+", [OrdersController::class, "addToCart"]);
 
