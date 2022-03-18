@@ -48,3 +48,5 @@ ShopServiceFacade::bot()->addRoute("/choose [()0-9]+ [()0-9]+", [OrdersControlle
 ShopServiceFacade::bot()->addRoute("/cancelOrdering", [OrdersController::class, "cancelOrdering"]);
 
 ShopServiceFacade::bot()->addRoute("/confirm [()0-9]+ [()0-9]+", [OrdersController::class, "confirmOrdering"]);
+
+ShopServiceFacade::bot()->addRoute("/Заказы ([()0-9]+)", [OrdersController::class, "listOrders"]);

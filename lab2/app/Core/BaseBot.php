@@ -100,9 +100,14 @@ abstract class BaseBot extends BotCore
             ]);
         }
         catch (\Exception $exception) {
-
+            $this->sendMessage($this->chatId, $exception->getMessage());
         }
         return $this;
+    }
+
+    public function replyInvoice($title, $description, $prices, $data)
+    {
+        return $this->sendInvoice($this->chatId, $title, $description, $prices, $data);
     }
 
     public function editInlineKeyboard($chatId, $messageId, $keyboard): BaseBot

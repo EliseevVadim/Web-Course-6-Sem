@@ -67,4 +67,18 @@ class OrdersController extends Controller
         ShopServiceFacade::bot()->reply("Заказ успешно оформлен. Оплатить его Вы сможете во вкладке \"Заказы\" пользовательского меню.")
             ->next("start");
     }
+
+    public function listOrders($message)
+    {
+        $userId = ShopServiceFacade::bot()->currentUser()->id;
+        $orders = Order::join('services', 'services.id', '=', 'orders.service_id')
+                        ->where('orders.user_id', $userId)
+                        ->where('orders.state_id', 1)
+                        ->get(['orders.*', 'services.*']);
+        foreach ($orders as $order) {
+            ShopServiceFacade::bot()->replyInvoice($order->name, $order->description, [
+                ["label" => "Количество единиц услуги - $order->quantity", "amount" => $order->sum * 100]
+            ], "data");
+        }
+    }
 }
