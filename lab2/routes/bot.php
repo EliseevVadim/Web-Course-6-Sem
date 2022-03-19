@@ -35,6 +35,9 @@ ShopServiceFacade::bot()->addRoute("/Только для модераторов"
     ShopServiceFacade::bot()->inlineKeyboard("Выберите действие:", [
         [
             ["text" => "Добавить услугу", "url" => "http://127.0.0.1:8000/openServiceAdding"]
+        ],
+        [
+            ["text" => "Добавить категорию услуг", "url" => "http://127.0.0.1:8000/addServiceType"]
         ]
     ]);
 });

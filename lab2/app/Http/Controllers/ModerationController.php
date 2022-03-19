@@ -16,6 +16,11 @@ class ModerationController extends Controller
         return view('addService', compact('types'));
     }
 
+    public function openServiceTypeAdding()
+    {
+        return view('addServiceType');
+    }
+
     public function addService(Request $request)
     {
         $request->validate([
@@ -33,5 +38,16 @@ class ModerationController extends Controller
         $service->image_path = $path;
         $service->save();
         return redirect("openServiceAdding");
+    }
+
+    public function addServiceType(Request $request)
+    {
+        $request = $request->validate([
+            "type_name" => "required|string"
+        ]);
+        $serviceType = new ServiceType;
+        $serviceType->fill($request);
+        $serviceType->save();
+        return redirect("addServiceType");
     }
 }

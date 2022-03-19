@@ -24,3 +24,7 @@ Route::any('/telegram/handler', [TelegramController::class, "handler"]);
 Route::get('/openServiceAdding', [ModerationController::class, "openServiceAdding"])->name("openServiceAdding");
 
 Route::post('/addService', [ModerationController::class, "addService"]);
+
+Route::get('/addServiceType', [ModerationController::class, "openServiceTypeAdding"])->name("typeAdding");
+
+Route::post('/addServiceType', [ModerationController::class, "addServiceType"]);
