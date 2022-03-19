@@ -71,6 +71,9 @@ class OrdersController extends Controller
             $order->quantity = $quantity;
             $order->sum = $order->calculateSum($serviceInfo, $quantity);
             $order->save();
+            $orderedService = Service::find($id);
+            $orderedService->orders_number += (int)$quantity;
+            $orderedService->save();
             (new OrdersMailer())->sendMessage($order, $serviceInfo);
             ShopServiceFacade::bot()->reply("Заказ успешно оформлен. Оплатить его Вы сможете во вкладке \"Заказы\" пользовательского меню.")
                 ->next("start");
