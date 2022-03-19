@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Core\OrdersMailer;
 use App\Facades\ShopServiceFacade;
+use App\Mail\ConfirmedOrderMail;
 use App\Models\Order;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class OrdersController extends Controller
@@ -24,6 +27,9 @@ class OrdersController extends Controller
             ],
             [
                 ["text" => "5", "callback_data" => "/choose 5 $id"],
+            ],
+            [
+                ["text" => "Отмена", "callback_data" => "/cancelOrdering"]
             ]
         ]);
     }
@@ -54,18 +60,26 @@ class OrdersController extends Controller
 
     public function confirmOrdering($message, $route)
     {
-        $data = explode(' ', $route);
-        $quantity = $data[1];
-        $id = (int)$data[2];
-        $serviceInfo = Service::where('id', $id)->select('name', 'price', 'discount')->first();
-        $order = new Order;
-        $order->user_id = ShopServiceFacade::bot()->currentUser()->id;
-        $order->service_id = $id;
-        $order->quantity = $quantity;
-        $order->sum = $order->calculateSum($serviceInfo, $quantity);
-        $order->save();
-        ShopServiceFacade::bot()->reply("Заказ успешно оформлен. Оплатить его Вы сможете во вкладке \"Заказы\" пользовательского меню.")
-            ->next("start");
+        try {
+            $data = explode(' ', $route);
+            $quantity = $data[1];
+            $id = (int)$data[2];
+            $serviceInfo = Service::where('id', $id)->select('name', 'price', 'discount')->first();
+            $order = new Order;
+            $order->user_id = ShopServiceFacade::bot()->currentUser()->id;
+            $order->service_id = $id;
+            $order->quantity = $quantity;
+            $order->sum = $order->calculateSum($serviceInfo, $quantity);
+            $order->save();
+            (new OrdersMailer())->sendMessage($order, $serviceInfo);
+            ShopServiceFacade::bot()->reply("Заказ успешно оформлен. Оплатить его Вы сможете во вкладке \"Заказы\" пользовательского меню.")
+                ->next("start");
+
+        }
+        catch (\Exception $exception) {
+            ShopServiceFacade::bot()->reply($exception->getMessage());
+        }
+
     }
 
     public function listOrders($message)
