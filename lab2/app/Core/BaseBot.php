@@ -2,6 +2,9 @@
 
 namespace App\Core;
 
+use App\Models\User;
+use SebastianBergmann\Diff\Exception;
+
 abstract class BaseBot extends BotCore
 {
     protected $bot;
@@ -178,6 +181,30 @@ abstract class BaseBot extends BotCore
         catch (\Exception $exception) {
             $this->sendMessage($this->chatId, $exception->getMessage());
             return 0;
+        }
+    }
+
+    public function replyEditedMessage($messageId, $text, $keyboard)
+    {
+        try {
+            $this->bot->editMessageText([
+                "chat_id" => $this->chatId,
+                "message_id" => $messageId,
+                "text" => $text,
+                "parse_mode" => "HTML"
+            ]);
+            $this->editInlineKeyboard($this->chatId, $messageId, $keyboard);
+        }
+        catch (\Exception $exception) {
+            $this->sendMessage($this->chatId, $exception->getMessage());
+        }
+    }
+
+    public function sendMessageToAllUsers($message)
+    {
+        $ids = User::query()->select('telegram_chat_id')->get();
+        foreach ($ids as $id) {
+            $this->sendMessage($id->telegram_chat_id, $message);
         }
     }
 }

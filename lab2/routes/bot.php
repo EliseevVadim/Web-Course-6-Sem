@@ -38,6 +38,9 @@ ShopServiceFacade::bot()->addRoute("/Только для модераторов"
         ],
         [
             ["text" => "Добавить категорию услуг", "url" => "http://127.0.0.1:8000/addServiceType"]
+        ],
+        [
+            ["text" => "Удалить категорию услуг", "callback_data" => "/startCategoryRemoving"]
         ]
     ]);
 });
@@ -64,3 +67,11 @@ ShopServiceFacade::bot()->addRoute("/Справка", function ($message) {
 \n\n\n
 С уважением, Администрация!");
 });
+
+ShopServiceFacade::bot()->addRoute("/startCategoryRemoving", [ServiceTypesController::class, "prepareServicesListForRemoving"]);
+
+ShopServiceFacade::bot()->addRoute("/removeCategory [()0-9]+", [ServiceTypesController::class, "removeCategory"]);
+
+ShopServiceFacade::bot()->addRoute("/cancelRemoving", [ServiceTypesController::class, "cancelRemoving"]);
+
+ShopServiceFacade::bot()->addRoute("/acceptRemoving [()0-9]+", [ServiceTypesController::class, "acceptRemoving"]);

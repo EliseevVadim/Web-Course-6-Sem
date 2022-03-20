@@ -37,6 +37,7 @@ class ModerationController extends Controller
         $service->fill($request->all());
         $service->image_path = $path;
         $service->save();
+        ShopServiceFacade::bot()->sendMessageToAllUsers("Услуги были обновлены. Введите /start для отображения изменений.");
         return redirect("openServiceAdding");
     }
 
@@ -48,6 +49,7 @@ class ModerationController extends Controller
         $serviceType = new ServiceType;
         $serviceType->fill($request);
         $serviceType->save();
+        ShopServiceFacade::bot()->sendMessageToAllUsers("Категории услуг были обновлены. Введите /start для отображения изменений.");
         return redirect("addServiceType");
     }
 }

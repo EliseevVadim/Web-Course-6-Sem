@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\ShopServiceFacade;
 use App\Models\Service;
 use App\Models\ServiceType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Telegram\Bot\FileUpload\InputFile;
 
@@ -13,19 +14,7 @@ class ServiceTypesController extends Controller
     private const RecordsPerPage = 5;
     public function loadAllTypes()
     {
-        $types = ServiceType::query()->select('id', 'type_name')->get();
-        $keyboard = [];
-        $index = 0;
-        $temp = [];
-        foreach ($types as $type) {
-            $count = Service::where('type_id', $type->id)->count();
-            $index++;
-            array_push($temp, ["text" => "$type->type_name ($count)", "callback_data" => "/type $type->id 0"]);
-            if ($index % 2 == 0 || $index == count($types)) {
-                array_push($keyboard, $temp);
-                $temp = [];
-            }
-        }
+        $keyboard = self::createServiceTypesKeyboard(false);
         ShopServiceFacade::bot()->inlineKeyboard("Выберите интересующую Вас категорию:", $keyboard);
     }
 
@@ -72,5 +61,64 @@ class ServiceTypesController extends Controller
             array_push($navKeyboard, $temp);
             ShopServiceFacade::bot()->inlineKeyboard("Перейти к странице:", $navKeyboard);
         }
+    }
+
+    public function prepareServicesListForRemoving($message)
+    {
+        $keyboard = self::createServiceTypesKeyboard(true);
+        ShopServiceFacade::bot()->replyEditedMessage($message->message_id, "Выберите удаляемую услугу", $keyboard);
+    }
+
+    public function createServiceTypesKeyboard($forDeleting)
+    {
+        $types = ServiceType::query()->select('id', 'type_name')->get();
+        $keyboard = [];
+        $index = 0;
+        $temp = [];
+        foreach ($types as $type) {
+            $count = Service::where('type_id', $type->id)->count();
+            $index++;
+            if ($forDeleting)
+                array_push($temp, ["text" => "$type->type_name ($count)", "callback_data" => "/removeCategory $type->id"]);
+            else
+                array_push($temp, ["text" => "$type->type_name ($count)", "callback_data" => "/type $type->id 0"]);
+            if ($index % 2 == 0 || $index == count($types)) {
+                array_push($keyboard, $temp);
+                $temp = [];
+            }
+        }
+        return $keyboard;
+    }
+
+    public function removeCategory($message, $route)
+    {
+        try {
+            $id = explode(' ', $route)[1];
+            $name = ServiceType::where('id', $id)->select('type_name')->first();
+            ShopServiceFacade::bot()->replyEditedMessage($message->message_id, "Вы действительно хотите удалить категорию услуг: $name->type_name", [
+                [
+                    ["text" => "Да", "callback_data" => "/acceptRemoving $id"],
+                    ["text" => "Нет", "callback_data" => "/cancelRemoving"]
+                ]
+            ]);
+        }
+        catch (\Exception $exception) {
+            ShopServiceFacade::bot()->reply($exception->getMessage());
+        }
+    }
+
+    public function cancelRemoving()
+    {
+        ShopServiceFacade::bot()->reply("Удаление категории услуг отменено.")
+            ->next("start");
+    }
+
+    public function acceptRemoving($message, $route)
+    {
+        $id = explode(' ', $route)[1];
+        ServiceType::destroy($id);
+        ShopServiceFacade::bot()->reply("Категория услуг успешно удалена")
+            ->next("start");
+        ShopServiceFacade::bot()->sendMessageToAllUsers("Категории услуг были обновлены. Введите /start для отображения изменений.");
     }
 }
