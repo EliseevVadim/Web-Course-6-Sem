@@ -32,6 +32,17 @@ class OrdersController extends Controller
                 ["text" => "Отмена", "callback_data" => "/cancelOrdering"]
             ]
         ]);
+        return [
+            "text" => "Выберите число единиц выбранной услуги:",
+            "inline_keyboard" => [
+                ["text" => "1", "callback_data" => "/choose 1 $id"],
+                ["text" => "2", "callback_data" => "/choose 2 $id"],
+                ["text" => "3", "callback_data" => "/choose 3 $id"],
+                ["text" => "4", "callback_data" => "/choose 4 $id"],
+                ["text" => "5", "callback_data" => "/choose 5 $id"],
+                ["text" => "Отмена", "callback_data" => "/cancelOrdering"]
+            ]
+        ];
     }
 
     public function chooseQuantity($message, $route)
@@ -50,12 +61,25 @@ class OrdersController extends Controller
                 ["text" => "Нет", "callback_data" => "/cancelOrdering"]
             ]
         ]);
+        return [
+            "text" => "Действительно ли Вы хотите заказать<br>
+<b>услугу:</b> $serviceInfo->name<br>
+<b>в количестве:</b> $quantity?<br>
+<b>Итоговая цена составит:</b> $sum ₽",
+            "inline_keyboard" => [
+                ["text" => "Да (добавить в заказы)", "callback_data" => "/confirm $quantity $id"],
+                ["text" => "Нет", "callback_data" => "/cancelOrdering"]
+            ]
+        ];
     }
 
     public function cancelOrdering()
     {
         ShopServiceFacade::bot()->reply("Процедура заказа услуги отменена.")
             ->next("start");
+        return [
+            "text" => "Процедура заказа услуги отменена."
+        ];
     }
 
     public function confirmOrdering($message, $route)
@@ -77,12 +101,13 @@ class OrdersController extends Controller
             (new OrdersMailer())->sendMessage($order, $serviceInfo);
             ShopServiceFacade::bot()->reply("Заказ успешно оформлен. Оплатить его Вы сможете во вкладке \"Заказы\" пользовательского меню.")
                 ->next("start");
-
+            return [
+                "text" => "Заказ успешно оформлен. Оплатить его Вы сможете во вкладке \"Заказы\" пользовательского меню."
+            ];
         }
         catch (\Exception $exception) {
             ShopServiceFacade::bot()->reply($exception->getMessage());
         }
-
     }
 
     public function listOrders($message)
@@ -97,5 +122,8 @@ class OrdersController extends Controller
                 ["label" => "Количество единиц услуги - $order->quantity", "amount" => $order->sum * 100]
             ], "data");
         }
+        return [
+            "text" => "Оплата заказов доступна непосредственно из бота."
+        ];
     }
 }

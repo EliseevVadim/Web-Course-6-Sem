@@ -16,10 +16,21 @@ class ServiceTypesController extends Controller
     {
         $keyboard = self::createServiceTypesKeyboard(false);
         ShopServiceFacade::bot()->inlineKeyboard("Выберите интересующую Вас категорию:", $keyboard);
+        $output = [];
+        $types = ServiceType::query()->select('id', 'type_name')->get();
+        foreach ($types as $type) {
+            $count = Service::where('type_id', $type->id)->count();
+            array_push($output, ["text" => "$type->type_name ($count)", "callback_data" => "/type $type->id 0"]);
+        }
+        return [
+            "text" => "Выберите интересующую Вас категорию:",
+            "inline_keyboard" => $output
+        ];
     }
 
     public function getServicesList($message, $route)
     {
+        $output = [];
         $data = explode(' ', $route);
         $typeId = (int)$data[1];
         $page = (int)$data[2];
@@ -32,6 +43,9 @@ class ServiceTypesController extends Controller
             ->skip(self::RecordsPerPage * $page)
             ->get();
         ShopServiceFacade::bot()->reply("Услуги из категории \"$name\":");
+        array_push($output, [
+            "text" => "Услуги из категории \"$name\":"
+        ]);
         foreach ($services as $service) {
             $price = $service->discount != null ? $service->price - ($service->price * $service->discount / 100) : $service->price;
             $path = InputFile::create(storage_path('app/public/images/'.$service->image_path));
@@ -40,8 +54,10 @@ class ServiceTypesController extends Controller
                     ["text" => "Добавить в коризину ($price ₽)", "callback_data" => "/addToCart $service->id"]
                 ]
             ]);
+            array_push($output, self::createWebData($service));
         }
         if ($servicesCount > self::RecordsPerPage) {
+            $webKeyboard = [];
             $pagesCount = ceil($servicesCount / self::RecordsPerPage);
             $navKeyboard = [
                 $prevPage >= 0 ?
@@ -59,8 +75,18 @@ class ServiceTypesController extends Controller
                 array_push($temp, ["text" => $actualNumber, "callback_data" => "/type $typeId $i"]);
             }
             array_push($navKeyboard, $temp);
+            foreach ($navKeyboard as $item) {
+                foreach ($item as $button) {
+                    array_push($webKeyboard, $button);
+                }
+            }
+            array_push($output, [
+                "text" => "Перейти к странице:",
+                "inline_keyboard" => $webKeyboard
+            ]);
             ShopServiceFacade::bot()->inlineKeyboard("Перейти к странице:", $navKeyboard);
         }
+        return $output;
     }
 
     public function prepareServicesListForRemoving($message)
@@ -120,5 +146,26 @@ class ServiceTypesController extends Controller
         ShopServiceFacade::bot()->reply("Категория услуг успешно удалена")
             ->next("start");
         ShopServiceFacade::bot()->sendMessageToAllUsers("Категории услуг были обновлены. Введите /start для отображения изменений.");
+    }
+
+    public function createWebData($service) {
+        $discount = null;
+        if (!is_null($service->discount))
+            $discount = $service->discount."%";
+        else
+            $discount = "отсутствует";
+        $price = $service->discount != null ? $service->price - ($service->price * $service->discount / 100) : $service->price;
+        $caption = "<b>Название:</b> $service->name<br>
+<b>Описание:</b> $service->description<br>
+<b>Скидка:</b> $discount<br>
+<b>Изначальная цена:</b> $service->price<br>
+<b>Число заказов:</b> $service->orders_number<br>";
+        return [
+            "text" => $caption,
+            "image" => $service->image_path,
+            "inline_keyboard" => [
+                ["text" => "Добавить в коризину ($price ₽)", "callback_data" => "/addToCart $service->id"]
+            ]
+        ];
     }
 }

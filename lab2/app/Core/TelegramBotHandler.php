@@ -5,6 +5,7 @@ namespace App\Core;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
+use function PHPUnit\Framework\returnArgument;
 
 class TelegramBotHandler extends BaseBot
 {
@@ -47,6 +48,9 @@ class TelegramBotHandler extends BaseBot
 
     public function handler()
     {
+        $output = [
+            "initial" => "output"
+        ];
         $update = $this->bot->getWebhookUpdate();
         include_once base_path('routes/bot.php');
         $item = json_decode($update);
@@ -55,7 +59,7 @@ class TelegramBotHandler extends BaseBot
             $item->callback_query->message ??
             null;
         if (is_null($message))
-            return;
+            return response()->json($output);
         if (isset($update["callback_query"]))
             $this->createUser($item->callback_query->from);
         else
@@ -73,7 +77,7 @@ class TelegramBotHandler extends BaseBot
                 foreach ($matches as $match)
                     array_push($arguments, $match);
                 try {
-                    $route["function"]($message, ...$arguments);
+                    $output = $route["function"]($message, ...$arguments);
                     $found = true;
                 }
                 catch (\Exception $exception) {
@@ -85,7 +89,7 @@ class TelegramBotHandler extends BaseBot
         if (!empty($this->next)) {
             foreach ($this->next as $item) {
                 try {
-                    $item["function"]($message);
+                    $output = $item["function"]($message);
                     $found = true;
                 }
                 catch (\Exception $exception) {
@@ -100,7 +104,7 @@ class TelegramBotHandler extends BaseBot
                     continue;
                 if ($route["path"] == "fallback") {
                     try {
-                        $route["function"]($message);
+                        $output = $route["function"]($message);
                         $fallbackFound = true;
                     }
                     catch (\Exception $exception) {
@@ -109,7 +113,8 @@ class TelegramBotHandler extends BaseBot
                 }
             }
             if (!$fallbackFound)
-                $this->reply("Произошла ошибка обработки запроса!");
+                $output = $this->reply("Ни...чего не понял, но очень интересно!");
         }
+        return response()->json($output);
     }
 }

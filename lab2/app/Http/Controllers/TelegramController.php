@@ -9,7 +9,7 @@ class TelegramController extends Controller
 {
     public function handler(Request $request)
     {
-        ShopServiceFacade::bot()->handler();
+        return ShopServiceFacade::bot()->handler();
     }
 
     public function test()

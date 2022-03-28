@@ -6,13 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-json": "*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "irazasyed/telegram-bot-sdk": "3.5",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "ext-json": "*"
+        "laravel/ui": "^3.4",
+        "telegram/passport-laravel": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

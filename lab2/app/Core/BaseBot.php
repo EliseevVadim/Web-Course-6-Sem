@@ -10,10 +10,10 @@ abstract class BaseBot extends BotCore
     protected $bot;
     protected $chatId;
 
-    public function sendMessage($chatId, $message): BaseBot
+    public function sendMessage($chatId, $message)
     {
         try {
-            $this->bot->sendMessage([
+            return $this->bot->sendMessage([
                "chat_id" => $chatId,
                "text" => $message,
                "parse_mode" => "HTML"
@@ -37,7 +37,7 @@ abstract class BaseBot extends BotCore
 <b>Скидка:</b> $discount
 <b>Изначальная цена:</b> $service->price
 <b>Число заказов:</b> $service->orders_number";
-            $this->bot->sendPhoto([
+            return $this->bot->sendPhoto([
                 "chat_id" => $this->chatId,
                 "photo" => $path,
                 "caption" => $caption,
@@ -53,10 +53,10 @@ abstract class BaseBot extends BotCore
         return $this;
     }
 
-    public function sendPhoto($chatId, $caption, $path): BaseBot
+    public function sendPhoto($chatId, $caption, $path)
     {
         try {
-            $this->bot->sendPhoto([
+            return $this->bot->sendPhoto([
                 "chat_id" => $this->chatId,
                 "photo" => $path,
                 "caption" => $caption,
@@ -69,10 +69,10 @@ abstract class BaseBot extends BotCore
         return $this;
     }
 
-    public function sendReplyKeyboard($chatId, $message, $keyboard): BaseBot
+    public function sendReplyKeyboard($chatId, $message, $keyboard)
     {
         try {
-            $this->bot->sendMessage([
+            return $this->bot->sendMessage([
                 "chat_id" => $chatId,
                 "text" => $message,
                 "parse_mode" => "HTML",
@@ -89,10 +89,10 @@ abstract class BaseBot extends BotCore
         return $this;
     }
 
-    public function sendInvoice($chatId, $title, $description, $prices, $data) : BaseBot
+    public function sendInvoice($chatId, $title, $description, $prices, $data)
     {
         try {
-            $this->bot->sendInvoice([
+            return $this->bot->sendInvoice([
                 "chat_id" => $chatId,
                 "title" => $title,
                 "description" => $description,
@@ -113,10 +113,10 @@ abstract class BaseBot extends BotCore
         return $this->sendInvoice($this->chatId, $title, $description, $prices, $data);
     }
 
-    public function editInlineKeyboard($chatId, $messageId, $keyboard): BaseBot
+    public function editInlineKeyboard($chatId, $messageId, $keyboard)
     {
         try {
-            $this->bot->editMessageReplyMarkup([
+            return $this->bot->editMessageReplyMarkup([
                 "chat_id" => $chatId,
                 "message_id" => $messageId,
                 "parse_mode" => "HTML",
@@ -131,10 +131,10 @@ abstract class BaseBot extends BotCore
         return $this;
     }
 
-    public function sendInlineKeyboard($chatId, $message, $keyboard): BaseBot
+    public function sendInlineKeyboard($chatId, $message, $keyboard)
     {
         try {
-            $this->bot->sendMessage([
+            return $this->bot->sendMessage([
                 "chat_id" => $chatId,
                 "text" => $message,
                 "parse_mode" => "HTML",
@@ -155,7 +155,8 @@ abstract class BaseBot extends BotCore
 
     public function reply($message)
     {
-        return $this->sendMessage($this->chatId, $message);
+        $this->sendMessage($this->chatId, $message);
+        return $this;
     }
 
     public function replyKeyboard($message, $keyboard = [])
