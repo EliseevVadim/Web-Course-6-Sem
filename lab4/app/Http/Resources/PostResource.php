@@ -19,7 +19,7 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'image_path' => $this->image_path,
-            'posting_time' => $this->posting_time->format('m/d/Y hh:mm'),
+            'posting_time' => $this->posting_time,
             'created_at' => $this->created_at->format('m/d/Y'),
             'updated_at' => $this->updated_at->format('m/d/Y'),
         ];
