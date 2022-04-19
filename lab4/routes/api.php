@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\CheckoutController;
+use App\Http\Controllers\API\CheckoutStateController;
+use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\ProductCategoryController;
+use App\Http\Controllers\API\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\PostController;
 
@@ -20,4 +25,10 @@ Route::post('register', [AuthController::class, 'signup']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('posts', PostController::class);
+    Route::resource('checkout-states', CheckoutStateController::class);
+    Route::resource('product_categories', ProductCategoryController::class);
+    Route::resource('orders', OrderController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('carts', CartController::class);
+    Route::resource('checkouts', CheckoutController::class);
 });

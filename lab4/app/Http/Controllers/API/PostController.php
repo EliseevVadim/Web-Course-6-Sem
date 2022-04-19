@@ -51,10 +51,7 @@ class PostController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
-        $post->title = $input['title'];
-        $post->description = $input['description'];
-        $post->image_path = $input['image_path'];
-        $post->save();
+        $post->update($input);
         return $this->sendResponse(new PostResource($post), 'The post was updated.');
     }
 

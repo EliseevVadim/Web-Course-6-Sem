@@ -15,7 +15,8 @@ class Product extends Model
         'weight',
         'price',
         'orders_count',
-        'category_id'
+        'category_id',
+        'image_path'
     ];
 
     public function productCategory()
