@@ -14,6 +14,8 @@ class CheckoutStateCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'checkout_states' => $this->collection
+        ];
     }
 }

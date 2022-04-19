@@ -12,4 +12,9 @@ class CheckoutState extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function checkout()
+    {
+        return $this->hasMany(Checkout::class, 'checkout_state_id');
+    }
 }

@@ -15,4 +15,9 @@ class Order extends Model
         'sum',
         'cart_id'
     ];
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'product_id');
+    }
 }

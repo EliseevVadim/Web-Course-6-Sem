@@ -14,4 +14,9 @@ class Checkout extends Model
         'checkout_state_id',
         'sum'
     ];
+
+    public function checkoutState()
+    {
+        return $this->belongsTo(CheckoutState::class, 'checkout_state_id');
+    }
 }
