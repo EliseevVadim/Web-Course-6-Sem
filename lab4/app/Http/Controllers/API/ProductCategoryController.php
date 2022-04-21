@@ -9,12 +9,76 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductCategoryController extends BaseController
 {
+    /**
+     * @OA\Get (
+     *     path="/product_categories",
+     *     operationId="getAllProductCategories",
+     *     summary="Get list of all product categories",
+     *     tags={"Product categories"},
+     *     description="Returns list of product categories",
+     *     security={
+     *         {"bearer": {}}
+     *     },
+     *     @OA\Response (
+     *        response=200,
+     *        description="success",
+     *     ),
+     *     @OA\Response (
+     *        response=401,
+     *        description="Unauthorised",
+     *     ),
+     *     @OA\Response (
+     *         response=403,
+     *         description="Forbidden"
+     *     )
+     *)
+     */
     public function index()
     {
         $categories = ProductCategory::all();
         return $this->sendResponse(ProductCategoryResource::collection($categories), 'success');
     }
 
+    /**
+     * @OA\Get (
+     *     path="/product_categories/{id}",
+     *     operationId="getProductCategoryById",
+     *     summary="Get one product category by id",
+     *     tags={"Product categories"},
+     *     description="Returns object of product category",
+     *     security={
+     *         {"bearer": {}}
+     *     },
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="Product category id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *     @OA\Response (
+     *        response=200,
+     *        description="success",
+     *        @OA\JsonContent (
+     *           @OA\Property(property="product_category", type="object", ref="#/components/schemas/ProductCategory")
+     *        )
+     *     ),
+     *     @OA\Response (
+     *        response=401,
+     *        description="Unauthorised",
+     *     ),
+     *     @OA\Response (
+     *         response=403,
+     *         description="Forbidden"
+     *     ),
+     *     @OA\Response (
+     *         response=404,
+     *         description="Not found"
+     *     )
+     *)
+     */
     public function show($id)
     {
         $category = ProductCategory::find($id);
@@ -23,6 +87,49 @@ class ProductCategoryController extends BaseController
         return $this->sendResponse(new ProductCategoryResource($category), 'success');
     }
 
+    /**
+     * @OA\Post (
+     *     path="/product_categories",
+     *     operationId="addProductCategory",
+     *     tags={"Product categories"},
+     *     summary="Add new product category",
+     *     description="Adds new product category",
+     *     security={
+     *         {"bearer": {}}
+     *     },
+     *     @OA\Parameter(
+     *          name="name",
+     *          description="Product category name",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *     @OA\RequestBody (
+     *        required=true,
+     *        description="The adding request",
+     *        @OA\JsonContent(
+     *           @OA\Property(property="name",type="string",example="Some Product Categoty"),
+     *        )
+     *     ),
+     *     @OA\Response (
+     *        response=200,
+     *        description="The product category was created.",
+     *        @OA\JsonContent (
+     *           @OA\Property(property="product_category", type="object", ref="#/components/schemas/ProductCategory")
+     *        )
+     *     ),
+     *     @OA\Response (
+     *        response=401,
+     *        description="Unauthorised",
+     *     ),
+     *      @OA\Response (
+     *         response=403,
+     *         description="Forbidden"
+     *     )
+     *)
+     */
     public function store(Request $request)
     {
         $input = $request->all();
@@ -36,6 +143,64 @@ class ProductCategoryController extends BaseController
         return $this->sendResponse(new ProductCategoryResource($category), 'The product category was created.');
     }
 
+    /**
+     * @OA\Put(
+     *      path="/product_categories/{id}",
+     *      operationId="updateProductCategory",
+     *      tags={"Product categories"},
+     *      summary="Update existing prodcut category",
+     *      description="Returns updated prodcut category data",
+     *      security={
+     *         {"bearer": {}}
+     *      },
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Product category id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="name",
+     *          description="Product category name",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\RequestBody (
+     *        required=true,
+     *        description="The updating request",
+     *        @OA\JsonContent(
+     *           @OA\Property(property="name",type="string",example="Some Product Categoty"),
+     *        )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="The product category was updated.",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductCategory")
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request"
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Resource Not Found"
+     *      )
+     * )
+     */
     public function update(Request $request, ProductCategory $productCategory)
     {
         $input = $request->all();
@@ -43,15 +208,47 @@ class ProductCategoryController extends BaseController
             'name' => 'required|unique:product_categories,name',
         ]);
         if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+            return $this->sendError($validator->errors(), 400);
         }
         $productCategory->update($input);
         return $this->sendResponse(new ProductCategoryResource($productCategory), 'The product category was updated.');
     }
-
+    /**
+     * @OA\Delete (
+     *     path="/product_categories/{id}",
+     *     operationId="deleteProductCategory",
+     *     tags={"Product categories"},
+     *     summary="Delete product category by id",
+     *     description="Deletes product category by id",
+     *     security={
+     *         {"bearer": {}}
+     *     },
+     *     @OA\Parameter(
+     *          name="id",
+     *          description="Product category id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *     @OA\Response (
+     *        response=200,
+     *        description="The product category was deleted.",
+     *     ),
+     *     @OA\Response (
+     *        response=401,
+     *        description="Unauthorised",
+     *     ),
+     *      @OA\Response (
+     *         response=403,
+     *         description="Forbidden"
+     *     )
+     *)
+     */
     public function destroy(ProductCategory $productCategory)
     {
         $productCategory->delete();
-        return $this->sendResponse([], 'The product category was deleted');
+        return $this->sendResponse([], 'The product category was deleted.');
     }
 }

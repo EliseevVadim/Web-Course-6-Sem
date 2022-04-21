@@ -22,6 +22,7 @@ use App\Http\Controllers\API\PostController;
 */
 Route::post('login', [AuthController::class, 'signin']);
 Route::post('register', [AuthController::class, 'signup']);
+Route::get('unauthorized', [AuthController::class, 'handleUnauthorizedRequest'])->name('unauthorized');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('posts', PostController::class);

@@ -7,7 +7,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+/**
+ * @OA\Schema (
+ *  title="User",
+ *  description="User model",
+ *  @OA\Property(
+ *      property="id",
+ *      type="integer"
+ *  ),
+ *  @OA\Property(
+ *      property="name",
+ *      type="string"
+ *  ),
+ *  @OA\Property(
+ *      property="email",
+ *      type="string"
+ *  ),
+ *  @OA\Property(
+ *      property="created_at",
+ *      type="date"
+ *  ),
+ *  @OA\Property(
+ *      property="updated_at",
+ *      type="date"
+ *  ),
+ * )
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
