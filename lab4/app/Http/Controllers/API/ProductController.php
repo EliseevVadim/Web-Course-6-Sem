@@ -181,25 +181,34 @@ class ProductController extends BaseController
      *     @OA\Response (
      *         response=400,
      *         description="Bad request"
+     *     ),
+     *     @OA\Response (
+     *         response=422,
+     *         description="Validation failed"
      *     )
      *)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required|unique:products,name',
-            'description' => 'required',
-            'image_path' => 'required',
-            'price' => 'required|integer',
-            'weight' => 'required|integer',
-            'category_id' => 'required|integer'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'name' => 'required|unique:products,name',
+                'description' => 'required',
+                'image_path' => 'required',
+                'price' => 'required|integer',
+                'weight' => 'required|integer',
+                'category_id' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $product = Product::create($input);
+            return $this->sendResponse(new ProductResource($product), 'The product was created.');
         }
-        $product = Product::create($input);
-        return $this->sendResponse(new ProductResource($product), 'The product was created.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -298,25 +307,34 @@ class ProductController extends BaseController
      *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *      )
      * )
      */
     public function update(Request $request, Product $product)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required|unique:products,name',
-            'description' => 'required',
-            'image_path' => 'required',
-            'price' => 'required|integer',
-            'weight' => 'required|integer',
-            'category_id' => 'required|integer'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'name' => 'required|unique:products,name',
+                'description' => 'required',
+                'image_path' => 'required',
+                'price' => 'required|integer',
+                'weight' => 'required|integer',
+                'category_id' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $product->update($input);
+            return $this->sendResponse(new ProductResource($product), 'The product was updated.');
         }
-        $product->update($input);
-        return $this->sendResponse(new ProductResource($product), 'The product was updated.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -353,12 +371,21 @@ class ProductController extends BaseController
      *     @OA\Response (
      *         response=404,
      *         description="Not found"
+     *     ),
+     *     @OA\Response (
+     *         response=400,
+     *         description="Bad request"
      *     )
      *)
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return $this->sendResponse([], 'Product deleted.');
+        try {
+            $product->delete();
+            return $this->sendResponse([], 'Product deleted.');
+        }
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 }

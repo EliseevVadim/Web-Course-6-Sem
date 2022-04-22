@@ -74,6 +74,10 @@ class CartController extends BaseController
      *     @OA\Response (
      *         response=403,
      *         description="Forbidden"
+     *     ),
+     *     @OA\Response (
+     *         response=404,
+     *         description="Cart does not exist."
      *     )
      *)
      */
@@ -131,22 +135,27 @@ class CartController extends BaseController
      *         description="Bad request"
      *     ),
      *     @OA\Response (
-     *         response=404,
-     *         description="Not found"
+     *         response=422,
+     *         description="Validation failed"
      *     )
      *)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'user_id' => 'required|integer|unique:carts,user_id'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'user_id' => 'required|integer|unique:carts,user_id'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $cart = Cart::create($input);
+            return $this->sendResponse(new CartResource($cart), 'The cart was created.');
         }
-        $cart = Cart::create($input);
-        return $this->sendResponse(new CartResource($cart), 'The cart was created.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -204,20 +213,29 @@ class CartController extends BaseController
      *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *      )
      * )
      */
     public function update(Request $request, Cart $cart)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'user_id' => 'required|integer|unique:carts,user_id'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'user_id' => 'required|integer|unique:carts,user_id'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $cart->update($input);
+            return $this->sendResponse(new CartResource($cart), 'The cart was updated.');
         }
-        $cart->update($input);
-        return $this->sendResponse(new CartResource($cart), 'The cart was updated.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -250,12 +268,21 @@ class CartController extends BaseController
      *      @OA\Response (
      *         response=403,
      *         description="Forbidden"
+     *     ),
+     *     @OA\Response (
+     *         response=400,
+     *         description="Bad request"
      *     )
      *)
      */
     public function destroy(Cart $cart)
     {
-        $cart->delete();
-        return $this->sendResponse([], 'The cart was deleted.');
+        try {
+            $cart->delete();
+            return $this->sendResponse([], 'The cart was deleted.');
+        }
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 }

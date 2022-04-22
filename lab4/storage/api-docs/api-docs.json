@@ -305,8 +305,8 @@
                     "400": {
                         "description": "Bad request"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -356,6 +356,9 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Cart does not exist."
                     }
                 },
                 "security": [
@@ -430,6 +433,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -465,6 +471,9 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -584,6 +593,9 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -727,6 +739,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -765,6 +780,9 @@
                     },
                     "404": {
                         "description": "Not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -855,6 +873,9 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -981,6 +1002,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1019,6 +1043,9 @@
                     },
                     "404": {
                         "description": "Not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -1151,6 +1178,9 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1316,6 +1346,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1354,6 +1387,9 @@
                     },
                     "404": {
                         "description": "Not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -1473,6 +1509,9 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1616,6 +1655,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1654,6 +1696,9 @@
                     },
                     "404": {
                         "description": "Not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -1744,6 +1789,9 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1870,6 +1918,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -1905,6 +1956,9 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -2063,6 +2117,9 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -2245,6 +2302,9 @@
                     },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
                     }
                 },
                 "security": [
@@ -2283,6 +2343,9 @@
                     },
                     "404": {
                         "description": "Not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 },
                 "security": [

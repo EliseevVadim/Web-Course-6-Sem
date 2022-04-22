@@ -127,20 +127,29 @@ class ProductCategoryController extends BaseController
      *      @OA\Response (
      *         response=403,
      *         description="Forbidden"
+     *     ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *     )
      *)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required|unique:product_categories,name',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'name' => 'required|unique:product_categories,name',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $category = ProductCategory::create($input);
+            return $this->sendResponse(new ProductCategoryResource($category), 'The product category was created.');
         }
-        $category = ProductCategory::create($input);
-        return $this->sendResponse(new ProductCategoryResource($category), 'The product category was created.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -198,20 +207,29 @@ class ProductCategoryController extends BaseController
      *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *      )
      * )
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required|unique:product_categories,name',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'name' => 'required|unique:product_categories,name',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $productCategory->update($input);
+            return $this->sendResponse(new ProductCategoryResource($productCategory), 'The product category was updated.');
         }
-        $productCategory->update($input);
-        return $this->sendResponse(new ProductCategoryResource($productCategory), 'The product category was updated.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
     /**
      * @OA\Delete (
@@ -243,12 +261,21 @@ class ProductCategoryController extends BaseController
      *      @OA\Response (
      *         response=403,
      *         description="Forbidden"
+     *     ),
+     *     @OA\Response (
+     *         response=400,
+     *         description="Bad request"
      *     )
      *)
      */
     public function destroy(ProductCategory $productCategory)
     {
-        $productCategory->delete();
-        return $this->sendResponse([], 'The product category was deleted.');
+        try {
+            $productCategory->delete();
+            return $this->sendResponse([], 'The product category was deleted.');
+        }
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 }

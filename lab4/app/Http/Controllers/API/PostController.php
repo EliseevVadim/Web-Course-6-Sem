@@ -152,23 +152,32 @@ class PostController extends BaseController
      *     @OA\Response (
      *         response=400,
      *         description="Bad request"
-     *     )
+     *     ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
+     *      )
      *)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'title' => 'required',
-            'description' => 'required',
-            'image_path' => 'nullable',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'title' => 'required',
+                'description' => 'required',
+                'image_path' => 'nullable',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $input['posting_time'] = Carbon::now();
+            $post = Post::create($input);
+            return $this->sendResponse(new PostResource($post), 'The post was created.');
         }
-        $input['posting_time'] = Carbon::now();
-        $post = Post::create($input);
-        return $this->sendResponse(new PostResource($post), 'The post was created.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -237,22 +246,31 @@ class PostController extends BaseController
      *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *      )
      * )
      */
     public function update(Request $request, Post $post)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'title' => 'nullable',
-            'description' => 'nullable',
-            'image_path' => 'nullable',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'title' => 'nullable',
+                'description' => 'nullable',
+                'image_path' => 'nullable',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $post->update($input);
+            return $this->sendResponse(new PostResource($post), 'The post was updated.');
         }
-        $post->update($input);
-        return $this->sendResponse(new PostResource($post), 'The post was updated.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -289,12 +307,21 @@ class PostController extends BaseController
      *     @OA\Response (
      *         response=404,
      *         description="Not found"
+     *     ),
+     *     @OA\Response (
+     *         response=400,
+     *         description="Bad request"
      *     )
      *)
      */
     public function destroy(Post $post)
     {
-        $post->delete();
-        return $this->sendResponse([], 'Post deleted.');
+        try {
+            $post->delete();
+            return $this->sendResponse([], 'Post deleted.');
+        }
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 }

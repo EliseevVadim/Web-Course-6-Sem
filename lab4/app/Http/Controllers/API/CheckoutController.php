@@ -152,22 +152,31 @@ class CheckoutController extends BaseController
      *     @OA\Response (
      *         response=400,
      *         description="Bad request"
+     *     ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *     )
      *)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'cart_id' => 'required|integer',
-            'checkout_state_id' => 'required|integer',
-            'sum' => 'required|integer'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'cart_id' => 'required|integer',
+                'checkout_state_id' => 'required|integer',
+                'sum' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $checkout = Checkout::create($input);
+            return $this->sendResponse(new CheckoutResource($checkout), 'The checkout was created.');
         }
-        $checkout = Checkout::create($input);
-        return $this->sendResponse(new CheckoutResource($checkout), 'The checkout was created.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -236,22 +245,31 @@ class CheckoutController extends BaseController
      *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
+     *      ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *      )
      * )
      */
     public function update(Request $request, Checkout $checkout)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'cart_id' => 'required|integer',
-            'checkout_state_id' => 'required|integer',
-            'sum' => 'required|integer'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'cart_id' => 'required|integer',
+                'checkout_state_id' => 'required|integer',
+                'sum' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $checkout->update($input);
+            return $this->sendResponse(new CheckoutResource($checkout), 'The checkout was updated.');
         }
-        $checkout->update($input);
-        return $this->sendResponse(new CheckoutResource($checkout), 'The checkout was updated.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -289,11 +307,20 @@ class CheckoutController extends BaseController
      *         response=404,
      *         description="Not found"
      *     ),
+     *     @OA\Response (
+     *         response=400,
+     *         description="Bad request"
+     *     )
      *)
      */
     public function destroy(Checkout $checkout)
     {
-        $checkout->delete();
-        return $this->sendResponse([], 'The checkout was deleted.');
+        try {
+            $checkout->delete();
+            return $this->sendResponse([], 'The checkout was deleted.');
+        }
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 }

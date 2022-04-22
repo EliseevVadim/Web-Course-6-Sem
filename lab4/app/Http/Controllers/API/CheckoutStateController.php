@@ -127,20 +127,29 @@ class CheckoutStateController extends BaseController
      *      @OA\Response (
      *         response=403,
      *         description="Forbidden"
-     *     )
+     *     ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
+     *      )
      *)
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required|unique:checkout_states,name',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'name' => 'required|unique:checkout_states,name',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $state = CheckoutState::create($input);
+            return $this->sendResponse(new CheckoutStateResource($state), 'The checkout state was created.');
         }
-        $state = CheckoutState::create($input);
-        return $this->sendResponse(new CheckoutStateResource($state), 'The post was created.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -198,20 +207,29 @@ class CheckoutStateController extends BaseController
      *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation failed"
      *      )
      * )
      */
     public function update(Request $request, CheckoutState $checkoutState)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'name' => 'required|unique:checkout_states,name'
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'name' => 'required|unique:checkout_states,name'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors(), 'Validation failed.',422);
+            }
+            $checkoutState->update($input);
+            return $this->sendResponse(new CheckoutStateResource($checkoutState), 'The checkout state was updated.');
         }
-        $checkoutState->update($input);
-        return $this->sendResponse(new CheckoutStateResource($checkoutState), 'The checkout state was updated.');
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 
     /**
@@ -248,12 +266,21 @@ class CheckoutStateController extends BaseController
      *     @OA\Response (
      *         response=404,
      *         description="Not found"
+     *     ),
+     *     @OA\Response (
+     *         response=400,
+     *         description="Bad request"
      *     )
      *)
      */
     public function destroy(CheckoutState $checkoutState)
     {
-        $checkoutState->delete();
-        return $this->sendResponse([], 'The checkout state was deleted');
+        try {
+            $checkoutState->delete();
+            return $this->sendResponse([], 'The checkout state was deleted');
+        }
+        catch (\Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], $exception->getMessage(), 400);
+        }
     }
 }
