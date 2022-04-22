@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('carts', CartController::class);
     Route::resource('checkouts', CheckoutController::class);
+    Route::get('logout', [AuthController::class, 'logout']);
 });

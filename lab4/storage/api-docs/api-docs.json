@@ -194,6 +194,32 @@
                 }
             }
         },
+        "/logout": {
+            "get": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Logout the user",
+                "description": "Logouts the user",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/carts": {
             "get": {
                 "tags": [

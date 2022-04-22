@@ -154,6 +154,35 @@ class AuthController extends BaseController
         return $this->sendResponse($success, 'User created successfully.');
     }
 
+    /**
+     * @OA\Get (
+     *     path="/logout",
+     *     operationId="logout",
+     *     summary="Logout the user",
+     *     tags={"Authorization"},
+     *     description="Logouts the user",
+     *     security={
+     *         {"bearer": {}}
+     *     },
+     *     @OA\Response (
+     *        response=200,
+     *        description="success",
+     *     ),
+     *     @OA\Response (
+     *        response=401,
+     *        description="Unauthorised",
+     *     ),
+     *     @OA\Response (
+     *         response=403,
+     *         description="Forbidden"
+     *     )
+     *)
+     */
+    public function logout(Request $request)
+    {
+        Auth::user()->currentAccessToken()->delete();
+        return $this->sendResponse([], 'User was successfully logged out.');
+    }
     public function handleUnauthorizedRequest()
     {
         return $this->sendError('Unauthorised.', ['error'=>'Unauthorised'], 401);
