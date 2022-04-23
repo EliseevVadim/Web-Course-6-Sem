@@ -9,10 +9,14 @@
         "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "^8.75",
+        "laravel/helpers": "^1.5",
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
+        "socialiteproviders/discord": "^4.1",
+        "socialiteproviders/telegram": "^4.1",
+        "socialiteproviders/vkontakte": "^4.2",
         "zircote/swagger-php": "^4.3"
     },
     "require-dev": {

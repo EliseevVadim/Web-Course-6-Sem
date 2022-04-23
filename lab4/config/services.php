@@ -30,4 +30,22 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'vkontakte' => [
+        'client_id' => env('VKONTAKTE_CLIENT_ID'),
+        'client_secret' => env('VKONTAKTE_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/social-auth/vkontakte/callback'
+    ],
+
+    'telegram' => [
+        'bot' => env('TELEGRAM_BOT_NAME'),
+        'client_id' => null,
+        'client_secret' => env('TELEGRAM_TOKEN'),
+        'redirect' => 'http://localhost:8000/social-auth/telegram/callback',
+    ],
+
+    'discord' => [
+        'client_id' => env('DISCORD_CLIENT_ID'),
+        'client_secret' => env('DISCORD_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/social-auth/discord/callback',
+    ],
 ];
