@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,9 +61,10 @@ class AuthController extends BaseController
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $authUser = Auth::user();
-            $success['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken;
-            $success['name'] =  $authUser->name;
-
+            $success['token'] = $authUser->createToken('MyAuthApp')->plainTextToken;
+            $success['name'] = $authUser->name;
+            $success['id'] = $authUser->id;
+            $success['cart_id'] = Cart::where('user_id', $authUser->id)->first()->id;
             return $this->sendResponse($success, 'User signed in');
         }
         else {
@@ -148,9 +150,14 @@ class AuthController extends BaseController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
+        $success['id'] = $user->id;
         $success['token'] =  $user->createToken('MyAuthApp')->plainTextToken;
         $success['name'] =  $user->name;
-
+        Auth::login($user);
+        $cart = new Cart;
+        $cart->user_id = $user->id;
+        $cart->save();
+        $success['cart_id'] = $cart->id;
         return $this->sendResponse($success, 'User created successfully.');
     }
 
@@ -180,7 +187,7 @@ class AuthController extends BaseController
      */
     public function logout(Request $request)
     {
-        Auth::user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
         return $this->sendResponse([], 'User was successfully logged out.');
     }
     public function handleUnauthorizedRequest()

@@ -20,7 +20,7 @@ class OrderResource extends JsonResource
             'quantity' => $this->quantity,
             'sum' => $this->sum,
             'cart_id' => $this->cart_id,
-            'product' => ProductResource::collection($this->product),
+            'product' => ProductResource::make($this->product),
             'created_at' => $this->created_at->format('m/d/Y'),
             'updated_at' => $this->updated_at->format('m/d/Y'),
         ];

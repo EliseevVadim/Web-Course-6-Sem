@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\SocialAccount;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -19,12 +21,23 @@ class SocialController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        $socialUser = Socialite::driver($provider)->stateless()->user();
-        $user = $this->findOrCreateUser($provider, $socialUser);
-        return response()->json([
-           'token' => $user->apiToken,
-           'name' => $user->name
-        ]);
+        try {
+            $socialUser = Socialite::driver($provider)->stateless()->user();
+            $user = $this->findOrCreateUser($provider, $socialUser);
+            Auth::login($user);
+            $cart = Cart::where('user_id', $user->id)->get()->first();
+            $socialUserObject = json_encode([
+                'id' => $user->id,
+                'token' => $user->apiToken,
+                'name' => $user->name,
+                'cart_id' => $cart->id
+            ]);
+            Session::put('social-data', $socialUserObject);
+            return redirect()->route('home-social');
+        }
+        catch (\Exception $exception) {
+            return redirect()->route('auth');
+        }
     }
 
     public function findOrCreateUser($provider, $socialUser)
@@ -69,5 +82,8 @@ class SocialController extends Controller
             'provider_id' => $socialiteUser->getId(),
             'token' => $socialiteUser->token,
         ]);
+        $cart = new Cart;
+        $cart->user_id = $user->id;
+        $cart->save();
     }
 }

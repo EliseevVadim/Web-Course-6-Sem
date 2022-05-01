@@ -18,7 +18,8 @@
         "socialiteproviders/discord": "^4.1",
         "socialiteproviders/telegram": "^4.1",
         "socialiteproviders/vkontakte": "^4.2",
-        "zircote/swagger-php": "^4.3"
+        "zircote/swagger-php": "^4.3",
+        "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

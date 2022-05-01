@@ -352,6 +352,9 @@ class OrderController extends BaseController
     public function destroy(Order $order)
     {
         try {
+            $product = Product::find($order->product_id);
+            $product->orders_count -= $order->quantity;
+            $product->save();
             $order->delete();
             return $this->sendResponse([], 'The order was deleted.');
         }

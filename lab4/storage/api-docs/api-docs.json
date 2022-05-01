@@ -2398,6 +2398,15 @@
                     "sum": {
                         "type": "integer"
                     },
+                    "client_full_name": {
+                        "type": "string"
+                    },
+                    "client_email": {
+                        "type": "string"
+                    },
+                    "client_address": {
+                        "type": "string"
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date"

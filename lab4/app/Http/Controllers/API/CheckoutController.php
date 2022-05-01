@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Resources\CheckoutResource;
 use App\Models\Checkout;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -166,12 +167,17 @@ class CheckoutController extends BaseController
             $validator = Validator::make($input, [
                 'cart_id' => 'required|integer',
                 'checkout_state_id' => 'required|integer',
-                'sum' => 'required|integer'
+                'sum' => 'required|integer',
+                'client_full_name' => 'required|string',
+                'client_email' => 'required|email',
+                'client_address' => 'required|string'
             ]);
             if ($validator->fails()) {
-                return $this->sendError($validator->errors(), 'Validation failed.',422);
+                return $this->sendError('Validation failed.', $validator->errors(),422);
             }
             $checkout = Checkout::create($input);
+            $ordersIds = Order::where('cart_id', $checkout->cart_id)->select('id')->get();
+            Order::destroy($ordersIds);
             return $this->sendResponse(new CheckoutResource($checkout), 'The checkout was created.');
         }
         catch (\Exception $exception) {

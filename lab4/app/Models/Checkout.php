@@ -25,6 +25,18 @@ use Illuminate\Database\Eloquent\Model;
  *      type="integer"
  *  ),
  *  @OA\Property(
+ *      property="client_full_name",
+ *      type="string"
+ *  ),
+ *  @OA\Property(
+ *      property="client_email",
+ *      type="string"
+ *  ),
+ *  @OA\Property(
+ *      property="client_address",
+ *      type="string"
+ *  ),
+ *  @OA\Property(
  *      property="created_at",
  *      type="date"
  *  ),
@@ -41,7 +53,10 @@ class Checkout extends Model
     protected $fillable = [
         'cart_id',
         'checkout_state_id',
-        'sum'
+        'sum',
+        'client_full_name',
+        'client_email',
+        'client_address'
     ];
 
     public function checkoutState()
