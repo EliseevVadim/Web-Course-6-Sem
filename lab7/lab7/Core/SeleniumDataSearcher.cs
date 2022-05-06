@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using lab7.FilesUtils;
 using OpenQA.Selenium;
-using System.IO;
-using System.Threading;
-using lab7.FilesUtils;
+using System;
 using System.Configuration;
+using System.IO;
+using System.Net;
+using System.Threading;
 
 namespace lab7.Core
 {

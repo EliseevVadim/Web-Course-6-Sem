@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
-using System.IO;
 using System.Configuration;
+using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace lab7.FilesUtils
 {
@@ -29,7 +25,7 @@ namespace lab7.FilesUtils
             var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 Encoding = Encoding.UTF8,
-                Delimiter = ";",               
+                Delimiter = ";",
             };
             using (TextReader reader = File.OpenText(_path))
             {
@@ -41,7 +37,7 @@ namespace lab7.FilesUtils
                         string line = csvReader.GetField(0);
                         if (_wordsTester.WordIsInFile(line))
                             continue;
-                        File.AppendAllText(_sourceFile, "\n" + line );
+                        File.AppendAllText(_sourceFile, "\n" + line);
                     }
                 }
             }

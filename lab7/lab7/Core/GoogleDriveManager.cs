@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using System;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace lab7.Core
 {
@@ -18,7 +15,7 @@ namespace lab7.Core
         private string _uploadsFolderName;
         private string _applicationName;
         private UserCredential _credential;
-        private string[] _scopes; 
+        private string[] _scopes;
         private DriveService _driveService;
 
         public GoogleDriveManager()
