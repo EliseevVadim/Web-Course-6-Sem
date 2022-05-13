@@ -4,6 +4,7 @@ namespace App\Core;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Smalot\PdfParser\Parser;
 
 class FileOriginalityChecker
 {
@@ -37,7 +38,7 @@ class FileOriginalityChecker
         $currentFileHashes = $this->prepareHashes($fileName);
         $allFiles = scandir(storage_path('uploads'));
         $allFiles = array_values(array_filter($allFiles, function ($name) {
-            return str_ends_with($name, '.docx');
+            return str_ends_with($name, '.docx') || str_ends_with($name, '.pdf');
         }));
         if (count($allFiles) < 2)
             return [
@@ -45,7 +46,7 @@ class FileOriginalityChecker
                 "percents" => 0
             ];
         foreach ($allFiles as $file) {
-            if (str_ends_with($file, '.docx')) {
+            if (str_ends_with($file, '.docx') || str_ends_with($file, '.pdf')) {
                 if ($file === $fileName)
                     continue;
                 $directoryFileCashes = $this->prepareHashes($file);
@@ -86,13 +87,23 @@ class FileOriginalityChecker
     /**
      * @throws Exception
      */
+    private function readPdfFile($fileName): string
+    {
+        $filename = storage_path('uploads/') . $fileName;
+        $parser = new Parser();
+        return $parser->parseFile($filename)->getText();
+    }
+
+    /**
+     * @throws Exception
+     */
     private function readContent($fileName)
     {
         if (str_ends_with($fileName, '.docx'))
             return $this->readDocxFile($fileName);
-        if (str_ends_with($fileName, '.doc'))
-            return "wait";
-        throw new Exception("test error");
+        if (str_ends_with($fileName, '.pdf'))
+            return $this->readPdfFile($fileName);
+        throw new Exception("Ошибка обработки файла");
     }
 
     private function canonizeText($input) : string
@@ -132,6 +143,7 @@ class FileOriginalityChecker
 
     private function compareHashes($firstFileHash, $secondFileHash)
     {
+        set_time_limit(0);
         $matchesCount = 0;
         foreach ($firstFileHash as $item) {
             if (in_array($item, $secondFileHash)) {

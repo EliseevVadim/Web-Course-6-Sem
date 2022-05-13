@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::any('/vk_bot_callback', function (Request $request) {
+Route::post('/vk_bot_callback', function (Request $request) {
     $server = new ServerHandler();
     $data = json_decode(file_get_contents('php://input'));
     $server->parse($data);

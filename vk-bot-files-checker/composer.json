@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.5",
         "lukemadhanga/php-document-parser": "^0.1.5",
         "phpoffice/phpword": "^0.18.3",
+        "smalot/pdfparser": "^2.2",
         "vkcom/vk-php-sdk": "^5.101"
     },
     "require-dev": {
