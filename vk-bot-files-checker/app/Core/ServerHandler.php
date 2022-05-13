@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use VK\CallbackApi\Server\VKCallbackApiServerHandler;
 use VK\Client\VKApiClient;
 
@@ -11,7 +12,7 @@ class ServerHandler extends VKCallbackApiServerHandler
 {
     const SECRET = "files_bot_secret";
     const GROUP_ID = 213175710;
-    const CONFIRMATION_TOKEN = "fd2fbbd1";
+    const CONFIRMATION_TOKEN = "63c762fd";
 
     protected $chatId;
     protected $text;
@@ -173,12 +174,14 @@ class ServerHandler extends VKCallbackApiServerHandler
                 $this->sendErrorMessageWithTutorialReference("Ошибка! Формат вложения не соответствует требованиям. Нажмите \"Справка\", чтобы перечитать правила использования бота.");
                 return;
             }
-
-            Log::info(json_encode($checkedAttachment));
+            $fileName = $this->downloadFile($checkedAttachment->url, $checkedAttachment->title);
+            $checker = new FileOriginalityChecker(3);
+            $checker->checkOriginality($fileName);
             $this->sendMessage($this->chatId, "дуплюсь");
         }
         catch (\Exception $exception) {
-            $this->sendErrorMessageWithTutorialReference("Произошла ошибка обработки вложения. Прочитайте требования к отправляемым вложениям в разделе \"Справка\"");
+            $this->sendMessage($this->chatId, $exception->getMessage());
+            //$this->sendErrorMessageWithTutorialReference("Произошла ошибка обработки вложения. Прочитайте требования к отправляемым вложениям в разделе \"Справка\"");
         }
     }
 
@@ -214,5 +217,12 @@ class ServerHandler extends VKCallbackApiServerHandler
                 ]
             ]
         ]);
+    }
+
+    private function downloadFile($url, $namePivot) : string
+    {
+        $fullName = uniqid() . '_' . str_replace(' ', '_', $namePivot);
+        Storage::disk('uploads')->put($fullName, file_get_contents($url), 'public');
+        return $fullName;
     }
 }

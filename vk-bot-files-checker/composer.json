@@ -6,13 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-json": "*",
+        "ext-zip": "*",
+        "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "vkcom/vk-php-sdk": "^5.101",
-        "ext-json": "*"
+        "lukemadhanga/php-document-parser": "^0.1.5",
+        "phpoffice/phpword": "^0.18.3",
+        "vkcom/vk-php-sdk": "^5.101"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
