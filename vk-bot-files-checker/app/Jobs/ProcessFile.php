@@ -43,7 +43,7 @@ class ProcessFile implements ShouldQueue
             Log::critical($fullName);
             $fileName = $fullName;
             Storage::disk('uploads')->put($fullName, file_get_contents($this->checkedAttachment->url), 'public');
-            $checker = new FileOriginalityChecker(3);
+            $checker = new FileOriginalityChecker(10);
             $response = $checker->checkOriginality($fullName);
             $similarity = $response['percents'];
             $closestFileName = $response['name'];
@@ -76,7 +76,8 @@ class ProcessFile implements ShouldQueue
                 Наибольшее совпадение с документами, имеющимися в системе: $similarity%.");
         }
         catch (\Exception $exception) {
-            $this->sendMessage($this->chatId, $exception->getMessage());
+            Storage::disk('uploads')->delete($fullName);
+            $this->sendMessage($this->chatId, "Произошла ошибка обработки файла, число слов в нем не превышает 10. Прочитайте требования к отправляемым вложениям в разделе \"Справка\"");
         }
     }
 
