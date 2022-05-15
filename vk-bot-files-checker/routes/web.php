@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\ServerHandler;
+use App\Classes\ServerHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/vk_bot_callback', function (Request $request) {
-    $server = new ServerHandler();
+
+Route::post("/vk_bot_callback",function (Request $request){
+    $handler = new ServerHandler();
     $data = json_decode(file_get_contents('php://input'));
-    $server->parse($data);
+    $handler->parse($data);
 });

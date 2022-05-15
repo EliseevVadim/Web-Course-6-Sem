@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Core;
+namespace App\Classes;
 
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Smalot\PdfParser\Parser;
 
@@ -29,9 +28,6 @@ class FileOriginalityChecker
         $this->shinlgeLength = $shinlgeLength;
     }
 
-    /**
-     * @throws Exception
-     */
     public function checkOriginality($fileName): array
     {
         $percents = [];
@@ -84,9 +80,6 @@ class FileOriginalityChecker
         return strip_tags($content);
     }
 
-    /**
-     * @throws Exception
-     */
     private function readPdfFile($fileName): string
     {
         $filename = storage_path('uploads/') . $fileName;
@@ -94,16 +87,13 @@ class FileOriginalityChecker
         return $parser->parseFile($filename)->getText();
     }
 
-    /**
-     * @throws Exception
-     */
     private function readContent($fileName)
     {
         if (str_ends_with($fileName, '.docx'))
             return $this->readDocxFile($fileName);
         if (str_ends_with($fileName, '.pdf'))
             return $this->readPdfFile($fileName);
-        throw new Exception("Ошибка обработки файла");
+        throw new \Exception("Ошибка обработки файла");
     }
 
     private function canonizeText($input) : string
@@ -133,9 +123,9 @@ class FileOriginalityChecker
         $result = [];
         foreach ($shingles as $shingle) {
             $append =
-            [
-                crc32($shingle)
-            ];
+                [
+                    crc32($shingle)
+                ];
             array_push($result, $append);
         }
         return $result;
@@ -153,9 +143,6 @@ class FileOriginalityChecker
         return ($matchesCount * 2)/floatval(count($firstFileHash) + count($secondFileHash)) * 100;
     }
 
-    /**
-     * @throws Exception
-     */
     private function prepareHashes($fileName): array
     {
         $content = $this->readContent($fileName);

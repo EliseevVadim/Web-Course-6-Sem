@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UploadedDocument extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'document_title',
         'document_size',
