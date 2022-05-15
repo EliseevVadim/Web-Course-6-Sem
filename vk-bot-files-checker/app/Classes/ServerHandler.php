@@ -60,7 +60,6 @@ class ServerHandler extends VKCallbackApiServerHandler
                         Важно! Проверка будет осуществляться на основе загруженных ранее документов, так что не пытайтесь проверять один и тот же документ по нескольку раз, во избежание получения негативного результата в виде выского процента совпадения.");
                 }
             ],
-
             [
                 "key" => "проверь",
                 "func" => function () {
@@ -68,14 +67,10 @@ class ServerHandler extends VKCallbackApiServerHandler
                     $this->processDocumentComparison();
                 },
             ]
-
         ];
-
         $is_found = false;
         foreach ($arr as $item) {
-
             $tmp = mb_strtolower($this->text);
-
             Log::info("$tmp =>");
             if (strpos($tmp, $item["key"]) !==false) {
                 $item["func"]();
@@ -83,11 +78,8 @@ class ServerHandler extends VKCallbackApiServerHandler
                 break;
             }
         }
-
         if (!$is_found)
             $this->sendMessage($this->chatId, "Я тебя не понимаю!(");
-
-        //$this->sendMessageWithKeyboard($this->chatId,"Спасибо! Ваше сообщение: $this->text ");
         unset($this->messageInfo);
         echo 'ok';
     }
@@ -100,7 +92,6 @@ class ServerHandler extends VKCallbackApiServerHandler
             'peer_id' => $chatId,
             'message' => $message,
             'random_id' => random_int(0, 10000000000),
-
         ]);
     }
 
@@ -175,15 +166,7 @@ class ServerHandler extends VKCallbackApiServerHandler
             dispatch($processFileJob);
         }
         catch (\Exception $exception) {
-            $this->sendMessage($this->chatId, $exception->getMessage());
-            //$this->sendErrorMessageWithTutorialReference("Произошла ошибка обработки вложения. Прочитайте требования к отправляемым вложениям в разделе \"Справка\"");
+            $this->sendMessageWithTutorialReference("Произошла ошибка обработки вложения. Прочитайте требования к отправляемым вложениям в разделе \"Справка\"");
         }
-    }
-
-    private function downloadFile($url, $namePivot) : string
-    {
-        $fullName = uniqid() . '_' . str_replace(' ', '_', $namePivot);
-        Storage::disk('uploads')->put($fullName, file_get_contents($url), 'public');
-        return $fullName;
     }
 }
