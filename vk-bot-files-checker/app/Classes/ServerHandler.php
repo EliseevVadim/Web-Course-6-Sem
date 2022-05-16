@@ -76,7 +76,7 @@ class ServerHandler extends VKCallbackApiServerHandler
             }
         }
         if (!$is_found)
-            $this->sendMessage($this->chatId, "Я тебя не понимаю!(");
+            $this->sendMessage($this->chatId, "Запрос не был распознан. Попробуйте снова.");
         unset($this->messageInfo);
         echo 'ok';
     }
