@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "8ce28cac-44ae-4baf-8c6a-d9c54b1e72ce": {
+      "ProjectGuid": "8ce28cac-44ae-4baf-8c6a-d9c54b1e72ce",
+      "DisplayName": "HttpServer",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "857495c6-0ccb-41ec-9bd1-472df9c6df68": {
+      "ProjectGuid": "857495c6-0ccb-41ec-9bd1-472df9c6df68",
+      "DisplayName": "HttpServer.App",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}

@@ -1,0 +1,6 @@
+D:\SixthSemesterWebProjects\lab8\HttpServer\bin\Debug\HttpServer.dll
+D:\SixthSemesterWebProjects\lab8\HttpServer\bin\Debug\HttpServer.pdb
+D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.csproj.AssemblyReference.cache
+D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.csproj.CoreCompileInputs.cache
+D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.dll
+D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.pdb
