@@ -23,6 +23,13 @@ namespace HttpServer.Core
             NetworkStream outputStream = GetOutputStram(client);
             HttpRequest request = GetRequest(inputStream, outputStream);
             HttpResponse response = ProcessRequest(request);
+            Console.WriteLine($"{response.StatusCode} - {request.Url}");
+            WriteResponse(outputStream, response);
+            outputStream.Flush();
+            outputStream.Close();
+            outputStream = null;
+            inputStream.Close();
+            inputStream = null;
         }
 
         protected virtual NetworkStream GetInputStream(TcpClient client)
@@ -49,11 +56,38 @@ namespace HttpServer.Core
             var controllers = currentProjectAssembly.GetTypes()
                 .Where(type => type.GetCustomAttributes(typeof(Controller), true).Any())
                 .ToList();
-            return new HttpResponse
+            MethodInfo correctMethod = null;
+            Type correctController = null;
+            foreach(var controller in controllers)
             {
-                StatusCode = HttpStatusCode.Continue,
-                Description = "In process"
-            };
+                var controllerMethods = controller.GetMethods()
+                    .Where(method => method.GetCustomAttributes(typeof(Page)).Any());
+                correctMethod = controllerMethods
+                    .Where(method => method.GetCustomAttributes(typeof(Page)).FirstOrDefault() is Page page && page.Uri == request.Url)
+                    .FirstOrDefault();
+                if (correctMethod != null)
+                {
+                    correctController = controller;
+                }
+            }
+            if (correctMethod == null)
+                return new HttpResponse
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Description = "Method not found"
+                };
+            try
+            {
+                return (HttpResponse)correctMethod.Invoke(correctController, new object[] { request });
+            }
+            catch(Exception ex)
+            {
+                return new HttpResponse()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Description = ex.Message
+                };
+            }
         }
 
         private static string ReadRequestLine(NetworkStream inputStream)
@@ -75,6 +109,25 @@ namespace HttpServer.Core
                 content += nextCharacter;
             }
             return content;
+        }
+
+        private static void WriteResponse(NetworkStream stream, HttpResponse response)
+        {
+            if (response.Content == null)
+                response.Content = new byte[] { };
+            if (!response.Headers.ContainsKey("Content-Type"))          
+                response.Headers["Content-Type"] = "application/json";
+            response.Headers["Content-Length"] = response.Content.Length.ToString();
+            WriteTextContentToStream(stream, $"HTTP/1.0 {response.StatusCode} {response.Description}\r\n");
+            WriteTextContentToStream(stream, string.Join("\r\n", response.Headers.Select(header => $"{header.Key} : {header.Value}")));
+            WriteTextContentToStream(stream, "\r\n\r\n");
+            stream.Write(response.Content, 0, response.Content.Length);
+        }
+
+        private static void WriteTextContentToStream(NetworkStream stream, string content)
+        {
+            byte[] raw = Encoding.UTF8.GetBytes(content);   
+            stream.Write(raw, 0, raw.Length);   
         }
 
         private HttpRequest GetRequest(NetworkStream inputStream, NetworkStream outputStream)
