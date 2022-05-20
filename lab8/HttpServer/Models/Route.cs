@@ -7,7 +7,7 @@ using HttpServer.Enums;
 
 namespace HttpServer.Models
 {
-    internal class Route
+    public class Route
     {
         public string Name { get; set; }
         public string Url { get; set; }

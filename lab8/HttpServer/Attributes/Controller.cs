@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttpServer.Attributes
 {
-    internal class Controller : Attribute
+    public class Controller : Attribute
     {
         public Controller()
         {

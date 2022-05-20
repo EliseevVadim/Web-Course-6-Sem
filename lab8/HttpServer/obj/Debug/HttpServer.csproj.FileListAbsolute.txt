@@ -4,3 +4,6 @@ D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.csproj.Assembly
 D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.csproj.CoreCompileInputs.cache
 D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.dll
 D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.pdb
+D:\SixthSemesterWebProjects\lab8\HttpServer\bin\Debug\Newtonsoft.Json.dll
+D:\SixthSemesterWebProjects\lab8\HttpServer\bin\Debug\Newtonsoft.Json.xml
+D:\SixthSemesterWebProjects\lab8\HttpServer\obj\Debug\HttpServer.csproj.CopyComplete

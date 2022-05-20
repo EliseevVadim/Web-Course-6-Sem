@@ -9,7 +9,10 @@ using System.Text.RegularExpressions;
 using HttpServer.Enums;
 using System.Reflection;
 using HttpServer.Attributes;
+using System.IO;
+using Newtonsoft.Json.Linq;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace HttpServer.Core
 {
@@ -30,6 +33,11 @@ namespace HttpServer.Core
             outputStream = null;
             inputStream.Close();
             inputStream = null;
+        }
+
+        public void AddRoute(Route addition)
+        {
+            _routes.Add(addition);
         }
 
         protected virtual NetworkStream GetInputStream(TcpClient client)
@@ -78,7 +86,24 @@ namespace HttpServer.Core
                 };
             try
             {
-                return (HttpResponse)correctMethod.Invoke(correctController, new object[] { request });
+                string[] urlParams = request.Url.Split('/');
+                List<object> methodParams = new List<object>();
+                foreach (string param in urlParams)
+                {
+                    int temp;
+                    if (int.TryParse(param, out temp))
+                    {
+                        methodParams.Add(int.Parse(param));
+                    }
+                }
+                JObject methodOutput = (JObject)correctMethod.Invoke(correctController, methodParams.ToArray());
+                string jsonOutput = methodOutput.ToString(Formatting.Indented);
+                return new HttpResponse()
+                {
+                    StatusCode = HttpStatusCode.Ok,
+                    Description = "success",
+                    ContentInUtf8 = jsonOutput
+                };
             }
             catch(Exception ex)
             {
@@ -92,23 +117,14 @@ namespace HttpServer.Core
 
         private static string ReadRequestLine(NetworkStream inputStream)
         {
-            string content = string.Empty;
-            int nextCharacter = 0;
-            while (true)
+            BinaryReader reader = new BinaryReader(inputStream);
+            string requestLine = string.Empty;
+            char ch;
+            while ((int)(ch = reader.ReadChar()) != '\n')
             {
-                nextCharacter = inputStream.ReadByte();
-                if (nextCharacter == -1)
-                {
-                    Thread.Sleep(1);
-                    continue;
-                }
-                if (nextCharacter == '\r')
-                    continue;
-                if (nextCharacter == '\n')
-                    break;
-                content += nextCharacter;
+                requestLine += ch;
             }
-            return content;
+            return requestLine;
         }
 
         private static void WriteResponse(NetworkStream stream, HttpResponse response)
@@ -134,6 +150,7 @@ namespace HttpServer.Core
         {
             string requestLine = ReadRequestLine(inputStream);
             string[] tokens = requestLine.Split(' ');
+            Console.WriteLine(requestLine);
             if (tokens.Length != 3)
                 throw new Exception("Invalid request line.");
             HttpMethod method = (HttpMethod)Enum.Parse(typeof(HttpMethod), tokens[0].ToUpper());

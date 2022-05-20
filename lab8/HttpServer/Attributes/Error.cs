@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttpServer.Attributes
 {
-    internal class Error : Attribute
+    public class Error : Attribute
     {
     }
 }

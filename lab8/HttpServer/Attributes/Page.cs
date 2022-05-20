@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HttpServer.Attributes
 {
-    internal class Page : Attribute
+    public class Page : Attribute
     {
         public string Uri { get; set; }
 
