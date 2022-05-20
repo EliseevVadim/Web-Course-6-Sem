@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HttpServer.Enums
+﻿namespace HttpServer.Enums
 {
-    public enum HttpStatusCode 
+    public enum HttpStatusCode
     {
         Continue = 100,
         Ok = 200,

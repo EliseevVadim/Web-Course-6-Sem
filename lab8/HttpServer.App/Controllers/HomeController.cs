@@ -1,12 +1,9 @@
 ﻿using HttpServer.Attributes;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
 using Newtonsoft.Json;
-using System;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace HttpServer.App.Controllers
 {
@@ -20,7 +17,7 @@ namespace HttpServer.App.Controllers
             var controllers = currentAssembly.GetTypes()
                                 .Where(type => type.GetCustomAttributes(typeof(Controller)).Any());
             List<MethodInfo> methods = new List<MethodInfo>();
-            foreach(var controller in controllers)
+            foreach (var controller in controllers)
             {
                 List<MethodInfo> pageMethods = controller.GetMethods()
                                 .Where(method => method.GetCustomAttributes(typeof(Page)).ToList().Count > 0)

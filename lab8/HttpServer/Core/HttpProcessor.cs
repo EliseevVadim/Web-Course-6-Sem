@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HttpServer.Models;
-using System.Net.Sockets;
-using System.Text.RegularExpressions;
+﻿using HttpServer.Attributes;
 using HttpServer.Enums;
-using System.Reflection;
-using HttpServer.Attributes;
-using System.IO;
-using Newtonsoft.Json.Linq;
-using System.Threading;
+using HttpServer.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace HttpServer.Core
 {
@@ -66,7 +64,7 @@ namespace HttpServer.Core
                 .ToList();
             MethodInfo correctMethod = null;
             Type correctController = null;
-            foreach(var controller in controllers)
+            foreach (var controller in controllers)
             {
                 var controllerMethods = controller.GetMethods()
                     .Where(method => method.GetCustomAttributes(typeof(Page)).Any());
@@ -105,7 +103,7 @@ namespace HttpServer.Core
                     ContentInUtf8 = jsonOutput
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new HttpResponse()
                 {
@@ -131,7 +129,7 @@ namespace HttpServer.Core
         {
             if (response.Content == null)
                 response.Content = new byte[] { };
-            if (!response.Headers.ContainsKey("Content-Type"))          
+            if (!response.Headers.ContainsKey("Content-Type"))
                 response.Headers["Content-Type"] = "application/json";
             response.Headers["Content-Length"] = response.Content.Length.ToString();
             WriteTextContentToStream(stream, $"HTTP/1.0 {response.StatusCode} {response.Description}\r\n");
@@ -142,8 +140,8 @@ namespace HttpServer.Core
 
         private static void WriteTextContentToStream(NetworkStream stream, string content)
         {
-            byte[] raw = Encoding.UTF8.GetBytes(content);   
-            stream.Write(raw, 0, raw.Length);   
+            byte[] raw = Encoding.UTF8.GetBytes(content);
+            stream.Write(raw, 0, raw.Length);
         }
 
         private HttpRequest GetRequest(NetworkStream inputStream, NetworkStream outputStream)
@@ -158,7 +156,7 @@ namespace HttpServer.Core
             string apiVersion = tokens[2];
             Dictionary<string, string> headers = new Dictionary<string, string>();
             string line;
-            while(!String.IsNullOrWhiteSpace(line = ReadRequestLine(inputStream))) 
+            while (!String.IsNullOrWhiteSpace(line = ReadRequestLine(inputStream)))
             {
                 int separatorIndex = line.IndexOf(":");
                 if (separatorIndex == -1)

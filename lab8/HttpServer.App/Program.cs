@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using HttpServer.Models;
+﻿using HttpServer.App.Models;
 using HttpServer.Enums;
+using HttpServer.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading;
-using HttpServer.App.Models;
 
 namespace HttpServer.App
 {
@@ -12,7 +12,7 @@ namespace HttpServer.App
         static void Main(string[] args)
         {
             ApplicationContext context = new ApplicationContext();
-            List<Route> routes = new List<Route>() 
+            List<Route> routes = new List<Route>()
             {
                 new Route()
                 {

@@ -1,11 +1,7 @@
-﻿using System;
+﻿using HttpServer.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Sockets;
 using System.Net;
-using HttpServer.Models;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace HttpServer.Core
@@ -21,7 +17,7 @@ namespace HttpServer.Core
         {
             _port = port;
             _processor = new HttpProcessor();
-            foreach(var route in routes)
+            foreach (var route in routes)
             {
                 _processor.AddRoute(route);
             }
